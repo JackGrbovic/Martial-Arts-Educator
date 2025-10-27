@@ -8,8 +8,8 @@ USER app
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG configuration=Release
 WORKDIR /src
-COPY MAE-WebAPI/MAE-WebAPI.csproj ./MAE-WebAPI/
-RUN dotnet restore "MAE-WebAPI/MAE-WebAPI.csproj"
+COPY MAE-WebAPI.csproj ./MAE-WebAPI/
+RUN dotnet restore "MAE-WebAPI.csproj"
 COPY . .
 WORKDIR "/src/MAE-WebAPI"
 RUN dotnet build "MAE-WebAPI.csproj" -c $configuration -o /app/build
