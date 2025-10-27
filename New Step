@@ -1,0 +1,8 @@
+INSERT INTO Steps(Id, MoveId, Name, FullDescription, VideoClipStartTime, VideoClipEndTime) VALUES(
+    NEWID(),
+    '838BE382-CC2F-404F-BC91-7F22EBDA6545',
+    'Use your Toes',
+    'Use your toes to pull yourself back when opponent advances.',
+    566,
+    628
+)

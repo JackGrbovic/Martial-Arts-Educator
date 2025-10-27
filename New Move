@@ -1,0 +1,6 @@
+INSERT INTO Moves VALUES(
+    NEWID(),
+    'Hip Pop Sprawl',
+    'Wrestling',
+    'https://www.youtube.com/watch?v=Zmealzdnit4'
+)

@@ -1,0 +1,9 @@
+INSERT INTO Steps(Id, MoveId, Name, ShortDescription, FullDescription, VideoClipStartTime, VideoClipEndTime) VALUES(
+    NEWID(),
+    '462B010A-4E0B-4116-96D3-6F62B269F4B9',
+    'Control Far Side Hip',
+    'Reach over and control the far side hip.',
+    'Reach your free arm around their back, over to their far side hip and control it.',
+    86,
+    120
+)
