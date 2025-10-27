@@ -1,0 +1,11 @@
+INSERT INTO Steps(Id, MoveId, Name, StepNumber, ShortDescription, FullDescription, VideoClipStartTime, VideoClipEndTime) 
+VALUES (
+    '4ebdffb8-b8e7-44b3-a9e7-7209775c78dc', 
+    '3c0100e2-7291-42e0-b687-da8ad94c26b6',
+    'Push and Twist',
+    2,
+    NULL,
+    'Now post your upper hand on their same-side elbow and push against it while you turn into them the opposite way, backwards from your lower side until you come up on top.',
+    40,
+    80
+)

@@ -1,0 +1,5 @@
+INSERT INTO Moves (Id, Name, MartialArtId, Url, LearningOrderNumber, ShortName) VALUES
+    ('0F802531-D226-493B-B6E0-E1B83ECE7A21',	'Single Leg',	'1fbd52a0-1bf0-4e8d-8745-9c093fd4d136',	'https://www.youtube.com/watch?v=mCRx-fBm8zE', 2, NULL),
+    ('2C3E219E-08BC-4382-AC9C-E59941330A37',	'Hip Pop Sprawl',	'1fbd52a0-1bf0-4e8d-8745-9c093fd4d136',	'https://www.youtube.com/watch?v=Zmealzdnit4', 3, 'Hip Pop'),
+    ('462B010A-4E0B-4116-96D3-6F62B269F4B9',	'Arm Drag',	'1fbd52a0-1bf0-4e8d-8745-9c093fd4d136',	'https://www.youtube.com/embed/YpB7OGZkTCI?si=zax2bqOK-68scgCG', 4, NULL),
+    ('838BE382-CC2F-404F-BC91-7F22EBDA6545',	'Sprawl',	'1fbd52a0-1bf0-4e8d-8745-9c093fd4d136',	'https://www.youtube.com/watch?v=Zmealzdnit4', 1, NULL)
