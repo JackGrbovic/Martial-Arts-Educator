@@ -1,9 +1,10 @@
 import { resolve } from 'path';
 import axios, { AxiosResponse } from 'axios';
 
+const API_BASE = process.env.REACT_APP_API_BASE_URL;
 
 export const api = axios.create({
-    baseURL: 'http://localhost:5240/api/mae',
+    baseURL: `${API_BASE}/api/mae`,
     withCredentials: true,
   });
 
