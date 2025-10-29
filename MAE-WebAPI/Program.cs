@@ -34,7 +34,7 @@ builder.Services.AddDbContext<MAEDbContext>(options =>
 
 builder.Services.AddScoped<MAEControllerFunctionProvider>();
 
-var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
+var allowedOrigins = builder.Configuration["AllowedOrigins"]
 
 builder.Services.AddCors(options =>
 {
@@ -109,3 +109,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
