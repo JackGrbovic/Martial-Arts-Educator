@@ -133,6 +133,8 @@ export type User = {
     const fetchAppData = async () => {
       try {
         const response = await api.get("/get-app-data");
+        console.log(response);
+        console.log(response.data);
         localStorage.setItem('martialArts', JSON.stringify(response.data.martialArts));
         localStorage.setItem('allSteps', JSON.stringify(response.data.steps))
         handleSetAppData(response.data.martialArts, response.data.steps)
