@@ -37,7 +37,6 @@ export default function LogIn(){
                 console.log("settingUserLoggedIn");
                 setUserLoggedIn(true);
             }
-            return response.data;
           } catch (error) {
             console.error('Submission error:', error);
             throw error;
