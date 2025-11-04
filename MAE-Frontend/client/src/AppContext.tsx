@@ -133,6 +133,7 @@ export type User = {
     const fetchAppData = async () => {
       try {
         const response = await api.get("/get-app-data");
+        await new Promise(res => setTimeout(res, 100));
         console.log(response);
         console.log(response.data);
         localStorage.setItem('martialArts', JSON.stringify(response.data.martialArts));
@@ -157,7 +158,7 @@ export type User = {
         await fetchUser();
       };
 
-      fetchData();
+      user && fetchData();
     }, []);
 
     useEffect(() => {
