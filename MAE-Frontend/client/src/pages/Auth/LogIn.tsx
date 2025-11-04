@@ -34,22 +34,13 @@ export default function LogIn(){
             const response = await api.post('/login', data);
             console.log("response", response)
             if(response.status === 200) {
-                console.log("settingUserLoggedIn");
-                setUserLoggedIn(true);
+                navigate('/dashboard')
             }
           } catch (error) {
             console.error('Submission error:', error);
             throw error;
           }
     }
-
-    useEffect(() => {
-        console.log("not logged in but useEffect hit", userLoggedIn)
-        if (userLoggedIn){
-            console.log("bro we logged the user in!")
-            navigate('/dashboard')
-        }
-    }, [userLoggedIn])
 
     return(
         <form onSubmit={handleSubmit(onSubmit)} style={{display: 'flex', flexDirection: 'column'}}>
