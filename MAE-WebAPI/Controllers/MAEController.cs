@@ -178,8 +178,8 @@ namespace MAE_WebAPI.Controllers{
             HttpContext.Response.Cookies.Append("access_token", newAccessToken, new CookieOptions
             {
                 HttpOnly = true,
-                Secure = false,
-                SameSite = SameSiteMode.Lax,
+                Secure = true,
+                SameSite = SameSiteMode.None,
             });
 
             Console.WriteLine("User");
@@ -323,8 +323,8 @@ namespace MAE_WebAPI.Controllers{
             Response.Cookies.Append("access_token", accessToken, new CookieOptions
             {
                 HttpOnly = true,
-                Secure = false, // True when in production
-                SameSite = SameSiteMode.Lax,
+                Secure = true, // True when in production
+                SameSite = SameSiteMode.None,
             });
 
             var thing = await _context.LearnedMoves.ToListAsync();
