@@ -41,6 +41,7 @@ export default function LogIn(){
 
     useEffect(() => {
         if (userLoggedIn){
+            console.log("bro we logged the user in!")
             navigate('/dashboard')
         }
     }, [userLoggedIn])

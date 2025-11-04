@@ -154,11 +154,11 @@ export type User = {
     }
 
     useEffect(() => {
-      const fetchData = async () => {
+      const fetchUserWrapper = async () => {
         await fetchUser();
       };
 
-      user && fetchData();
+      fetchUserWrapper();
     }, []);
 
     useEffect(() => {
