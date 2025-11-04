@@ -30,7 +30,9 @@ export default function LogIn(){
 
     const onSubmit: SubmitHandler<LoginForm> = async (data) => {
         try {
+            console.log("starting log in")
             const response = await api.post('/login', data);
+            console.log("response", response)
             if(response.status === 200) setUserLoggedIn(true);
             return response.data;
           } catch (error) {
