@@ -33,7 +33,10 @@ export default function LogIn(){
             console.log("starting log in")
             const response = await api.post('/login', data);
             console.log("response", response)
-            if(response.status === 200) setUserLoggedIn(true);
+            if(response.status === 200) {
+                console.log("settingUserLoggedIn);
+                setUserLoggedIn(true);
+            }
             return response.data;
           } catch (error) {
             console.error('Submission error:', error);
