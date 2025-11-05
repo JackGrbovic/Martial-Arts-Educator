@@ -34,9 +34,7 @@ builder.Services.AddDbContext<MAEDbContext>(options =>
 
 builder.Services.AddScoped<MAEControllerFunctionProvider>();
 
-var allowedOrigins = builder.Environment.IsDevelopment()
-    ? new[] { "http://localhost:3000" }
-    : new[] { "https://martial-arts-educator-client.onrender.com" };
+var allowedOrigins = new[] { "https://martial-arts-educator-client.onrender.com", "http://localhost:3000" };
 //var allowedOrigins = builder.Configuration["AllowedOrigins"] ?? "https://martial-arts-educator-client.onrender.com";
 
 builder.Services.AddCors(options =>
@@ -112,6 +110,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
 
 
 
