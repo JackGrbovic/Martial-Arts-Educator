@@ -149,6 +149,8 @@ export type User = {
     //write a function to fetch and set reviews (we can get filter reviews that are ready in the controller before sending them here)
 
     function handleSetAppData(martialArtsData, stepsData){
+        console.log("martialArtsData", martialArtsData);
+      console.log("stepsData", stepsData);
       setMartialArts([...martialArtsData]);
       setAllSteps([...stepsData]);
     }
