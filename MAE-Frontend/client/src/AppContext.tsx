@@ -36,14 +36,22 @@ export type User = {
   export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const navigate = useNavigate();
     const [user, setUser] = useState<User | null>(null);
-    const [martialArts, setMartialArts] = useState<MartialArt[] | null>(null)
-    const [allSteps, setAllSteps] = useState<Step[] | null>(null)
+    const [martialArts, setMartialArts] = useState<MartialArt[] | null>(null);
+    const [allSteps, setAllSteps] = useState<Step[] | null>(null);
     const [unlearnedMoves, setUnlearnedMoves] = useState<Move[]>();
     const [reviews, setReviews] = useState();
     const [loading, setLoading] = useState(true);
     const [userLoading, setUserLoading] = useState<boolean>(true);
 
-    const fetchUser = async () => {
+    console.log("user", user)
+    console.log("martialArts", martialArts)
+    console.log("allSteps", allSteps)
+    console.log("unlearnedMoves", unlearnedMoves)
+    console.log("reviews", reviews)
+    console.log("loading", loading)
+    console.log("userLoading", userLoading)
+
+    const fetchUserOnRefresh = async () => {
       try {
         const response = await api.post("/refresh");
         const responseUser = response.data.user;
@@ -79,7 +87,6 @@ export type User = {
     const [iframeLoaded, setIframeLoaded] = useState(false)
 
 
-
     useLayoutEffect(() => {
       function updateSizes() {
         setWindowSize([window.innerWidth, window.innerHeight]);
@@ -103,39 +110,37 @@ export type User = {
     }
 
 
-    const handleSetLearnedMoves = (user, martialArts: MartialArt[]) => {
-      let learnedMoves = [];
+    // const handleSetLearnedMoves = (user, martialArts: MartialArt[]) => {
+    //   let learnedMoves = [];
 
-      if (martialArts && user.learnedMoves) {
-        for (let i = 0; i < martialArts.length; i++){
-          for (const learnedMove of user.learnedMoves){
-            const learnedMoveMoveData = martialArts[i].moves.find(m => m.id === learnedMove.moveId);
-            if (learnedMoveMoveData){
-              const learnedMoveToReturn = {
-                ...learnedMoveMoveData,
-                id: learnedMove.id,
-                userId: learnedMove.userId,
-                easeFactor: learnedMove.easeFactor,
-                martialArtId: learnedMoveMoveData.martialArtId
-              }
-              learnedMoves.push(learnedMoveToReturn);
-            }
-          }
-        }
-      }
+    //   if (martialArts && user.learnedMoves) {
+    //     for (let i = 0; i < martialArts.length; i++){
+    //       for (const learnedMove of user.learnedMoves){
+    //         const learnedMoveMoveData = martialArts[i].moves.find(m => m.id === learnedMove.moveId);
+    //         if (learnedMoveMoveData){
+    //           const learnedMoveToReturn = {
+    //             ...learnedMoveMoveData,
+    //             id: learnedMove.id,
+    //             userId: learnedMove.userId,
+    //             easeFactor: learnedMove.easeFactor,
+    //             martialArtId: learnedMoveMoveData.martialArtId
+    //           }
+    //           learnedMoves.push(learnedMoveToReturn);
+    //         }
+    //       }
+    //     }
+    //   }
       
-      //refactor
-      const userWithScaffoldedLearnedMoves = JSON.parse(JSON.stringify(user));
-      userWithScaffoldedLearnedMoves.learnedMoves = learnedMoves;
-      setUser(userWithScaffoldedLearnedMoves);
-    }
+    //   //refactor
+    //   const userWithScaffoldedLearnedMoves = JSON.parse(JSON.stringify(user));
+    //   userWithScaffoldedLearnedMoves.learnedMoves = learnedMoves;
+    //   setUser(userWithScaffoldedLearnedMoves);
+    // }
 
     const fetchAppData = async () => {
+      console.log("fetching app data")
       try {
         const response = await api.get("/get-app-data");
-        await new Promise(res => setTimeout(res, 100));
-        console.log(response);
-        console.log(response.data);
         localStorage.setItem('martialArts', JSON.stringify(response.data.martialArts));
         localStorage.setItem('allSteps', JSON.stringify(response.data.steps))
         handleSetAppData(response.data.martialArts, response.data.steps)
@@ -143,45 +148,52 @@ export type User = {
       } catch (err) {
         console.error("Failed to set MartialArts", err.message);
         setMartialArts(null);
+      } finally{
+        setLoading(false);
       }
     };
 
     //write a function to fetch and set reviews (we can get filter reviews that are ready in the controller before sending them here)
 
-    function handleSetAppData(martialArtsData, stepsData){
-        console.log("martialArtsData", martialArtsData);
-      console.log("stepsData", stepsData);
-      setMartialArts([...martialArtsData]);
-      setAllSteps([...stepsData]);
-    }
+    const handleSetAppData = (martialArtsData, stepsData) =>{
+      console.log("martialArtsData", martialArtsData)
+      console.log("stepsData", stepsData)
+      setMartialArts(prev => {
+        console.log("SET martialArts → prev:", prev);
+        console.log("SET martialArts → new:", martialArtsData);
+        return martialArtsData;
+      });
+      setAllSteps(stepsData);
+    };
 
     useEffect(() => {
-      const fetchUserWrapper = async () => {
-        await fetchUser();
+      const fetchUserOnRefreshWrapper = async () => {
+        await fetchUserOnRefresh();
       };
 
-      fetchUserWrapper();
+      fetchUserOnRefreshWrapper();
     }, []);
 
     useEffect(() => {
-      handleSetLessons(user, martialArts);
-    }, [user])
+      console.log("useEffectMartialArts", martialArts)
+    }, [martialArts])
+
+
+    // useEffect(() => {
+    //   user && martialArts && handleSetLessons(user, martialArts);
+    // }, [user, martialArts])
   
     useEffect(() => {
       const storedMartialArts: string | null = localStorage.getItem('martialArts');
-      const martialArts: MartialArt[] | null = storedMartialArts ? JSON.parse(storedMartialArts) : null;
+      const parsedMartialArts: MartialArt[] | null = storedMartialArts ? JSON.parse(storedMartialArts) : null;
       const storedSteps: string | null = localStorage.getItem('steps');
-      const allSteps: Step[] | null = storedSteps ? JSON.parse(storedSteps) : null;
-      martialArts !== null && allSteps !== null ? handleSetAppData(martialArts, allSteps) : fetchAppData();
-      // user && martialArts && handleSetLearnedMoves(user, martialArts);
-      if (martialArts && user?.learnedMoves) handleSetLessons(user, martialArts);
-      //if user doesn't return, loading is never set to false
+      const parsedAllSteps: Step[] | null = storedSteps ? JSON.parse(storedSteps) : null;
+      parsedMartialArts !== null && parsedAllSteps !== null ? handleSetAppData(parsedMartialArts, parsedAllSteps) : fetchAppData();
+      if (parsedMartialArts && user?.learnedMoves) handleSetLessons(user, parsedMartialArts);
       if (!userLoading) setLoading(false);
     }, [user, userLoading]);
-  
-    //pass this to the header when creating it
+
     const logout = () => {
-      // Clear auth state or call logout endpoint if needed
       setUser(null);
       navigate('/login');
     };

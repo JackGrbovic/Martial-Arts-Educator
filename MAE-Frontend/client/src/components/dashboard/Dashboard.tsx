@@ -37,8 +37,8 @@ export default function Dashboard(){
     }, [selectedMartialArt]);
 
     useEffect(() => {
-        reviews && constructReviewsFromMoves();
-    }, [selectedMartialArtLearnedMoves, reviews]);
+        reviews && martialArts && selectedMartialArt && constructReviewsFromMoves();
+    }, [selectedMartialArtLearnedMoves, reviews, martialArts]);
 
     useEffect(() => {
         constructedReviews && handleSetSelectedMartialArtReviews();
@@ -86,7 +86,7 @@ export default function Dashboard(){
     };
 
     const handleSetBeginReviews = () => {
-        setBeginReviews(true);
+        selectedMartialArtReviews.length > 0 && setBeginReviews(true);
     }
 
     const handleSetSelectedMartialArtLessons = () => {

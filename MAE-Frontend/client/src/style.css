@@ -239,11 +239,17 @@
     align-self: flex-end;
 }
 
-.button, .color-1-container-within-hollow-button, .chevron-selector-button-left, .chevron-selector-button-right, .hollow-container, .button-within-button, .small-button-within-button, .answer-container{
+.button, .color-1-container-within-hollow-button, .chevron-selector-button-left, .chevron-selector-button-right, .hollow-container, .button-within-button, .small-button-within-button{
     display: flex;
     align-items: center;
     justify-items: center;
     box-sizing: border-box;
+    height: 100%;
+}
+
+.answer-container{
+    display: flex;
+     box-sizing: border-box;
     height: 100%;
 }
 

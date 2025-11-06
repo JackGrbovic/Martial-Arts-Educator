@@ -8,18 +8,23 @@ export default function DashboardTopRow({selectedMartialArtLessons, reviews, sel
     const [logout, setLogout] = useState(false);
     const navigate = useNavigate();
 
+    console.log("selectedMartialArt", selectedMartialArt);
+    console.log("martialArts", martialArts);
+
     useEffect(() => {
-        setSelectedMartialArt(martialArts[0])
-    }, []);
+        martialArts && setSelectedMartialArt(martialArts[0])
+    }, [martialArts]);
 
     const [index, setIndex] = useState(0);
 
     useEffect(() => {
-        setSelectedMartialArt(martialArts[index])
+        martialArts && setSelectedMartialArt(martialArts[index])
     }, [index]);
 
 
     const handleSetMartialArt = (direction) => {
+        if (!martialArts) return;
+
         if (martialArts?.length < 2) {
             return;
         }

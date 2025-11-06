@@ -13,7 +13,7 @@ export default function Lesson(){
     const navigate = useNavigate();
 
     const [setupTestFlag, setSetupTestFlag] = useState(false);
-    const [currentMove] = useState <Move | null>(martialArts.find(ma => ma.id === martialArtId)?.moves.find(m => m.id === moveId) ?? null)
+    const [currentMove, setCurrentMove] = useState <Move | null>(null)
 
     const [steps, setSteps] = useState<LessonStep[] | null>(currentMove?.steps ?? null);
 
@@ -50,6 +50,12 @@ export default function Lesson(){
     useEffect(() => {
     }, [])
 
+    console.log("currentMove", currentMove)
+
+    useEffect(() => {
+        martialArts && moveId && setCurrentMove(martialArts.find(ma => ma.id === martialArtId)?.moves.find(m => m.id === moveId))
+;    }, [martialArts, moveId])
+
     useEffect(() => {
         //the below is messy
         setupTestFlag && handleSetUpTest();
@@ -72,7 +78,14 @@ export default function Lesson(){
 
     useEffect(() => {
         handleSetVideoSize();
+        
+        currentMove && handleSetStepsAndCurrentStep();
+        
+    }, [currentMove]);
 
+    console.log("steps", steps)
+
+    function handleSetStepsAndCurrentStep(){
         let correctlyOrderedSteps = []
         const originalSteps = JSON.parse(JSON.stringify(currentMove?.steps));
         for (let i = 0; i < originalSteps.length; i++){
@@ -81,12 +94,11 @@ export default function Lesson(){
         }
         setSteps(correctlyOrderedSteps);
         setCurrentStep(correctlyOrderedSteps[0] as LessonStep ?? null)
-        
-    }, []);
+    }
 
     const handleSetVideoSize = () => {
         if (isMobile && iframeParentSize[0] > 800) setVideoHeight(600);
-        else if (iframeParentSize[0] < 800 && iframeParentSize[0] > 450) setVideoHeight(400);
+        else if (iframeParentSize[0] < 800 && iframeParentSize[0] > 450) setVideoHeight(300);
         else if (iframeParentSize[0] < 450) setVideoHeight(200);
         else if (!isMobile) setVideoHeight(780);
     }
@@ -103,11 +115,11 @@ export default function Lesson(){
                         </p>
                     </div>
                     
-                    <p className='medium-title color-1 lesson-move-name'>{currentMove.name}: {currentStep?.name }</p>
+                    <p className='medium-title color-1 lesson-move-name'>{currentMove && currentMove.name}: {currentStep?.name }</p>
                     {steps && currentStep && (
                         <>
-                            <LessonVideo videoHeight={videoHeight} url={currentMove.url} startTime={currentStep?.videoClipStartTime} endTime={currentStep?.videoClipEndTime} />
-                            <LessonBottomRow rearrangeBottomRow={rearrangeBottomRow} currentStep={currentStep} handleSetCurrentStep={handleSetCurrentStep} steps={steps} setSetupTestFlag={setSetupTestFlag}/>
+                            <LessonVideo videoHeight={videoHeight} url={currentMove && currentMove.url} startTime={currentStep?.videoClipStartTime} endTime={currentStep?.videoClipEndTime} />
+                            <LessonBottomRow rearrangeBottomRow={rearrangeBottomRow} currentStep={currentStep} handleSetCurrentStep={handleSetCurrentStep} steps={steps && steps} setSetupTestFlag={setSetupTestFlag}/>
                         </>
                     )}
 

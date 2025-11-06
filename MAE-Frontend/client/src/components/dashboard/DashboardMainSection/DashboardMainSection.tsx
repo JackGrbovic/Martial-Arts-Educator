@@ -17,14 +17,14 @@ export default function DashboardMainSection({selectedMartialArtLessons, selecte
     const [showUserGuide, setShowUserGuide] = useState(false);
 
     useEffect(() => {
-        determineBackgroundImage();
-    }, [isMobile])
+        selectedMartialArt && determineBackgroundImage(selectedMartialArt);
+    }, [isMobile, selectedMartialArt])
 
     useEffect(() => {
     }, [showLearnedMoves, showUserGuide])
 
     useEffect(() => {
-        determineBackgroundImage();
+        selectedMartialArt && determineBackgroundImage(selectedMartialArt);
     }, [selectedMartialArt])
 
     const handleDisplayInfoPanel = (panelName: string) => {
@@ -46,7 +46,7 @@ export default function DashboardMainSection({selectedMartialArtLessons, selecte
             }
         }
     
-    const determineBackgroundImage = () => {
+    const determineBackgroundImage = (selectedMartialArt) => {
         if (selectedMartialArt.name === "Wrestling"){
             setBackgroundImage(!isMobile ? WrestlingImage : WrestlingMobileImage);
         } 
