@@ -23,6 +23,14 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
     children: [
+      {
+        index: true,
+        element: (
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        )
+      },
       { path: "/lesson/:martialArtId/:moveId", element: 
         <ProtectedRoute>
           <Lesson />
