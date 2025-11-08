@@ -52,7 +52,7 @@ export default function Register(){
 
     const onSubmit: SubmitHandler<UserForm> = async (data) => {
         try{
-            const response = await api.post('/register', JSON.stringify(data));
+            const response = await api.post('/register', data);
 
             if(response.status === 200) {
                 navigate('/')
