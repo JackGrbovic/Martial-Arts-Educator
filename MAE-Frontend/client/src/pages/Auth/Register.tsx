@@ -55,22 +55,25 @@ export default function Register(){
             const response = await api.post('/register', data);
 
             if(response.status === 200) {
-                navigate('/')
+                navigate('/');
+                window.location.reload();
             }
         } catch (error) {
-            setErrorMessage(`Submission error: ${error}`);
+            setErrorMessage(`Failed to create user.`);
         }
     }
 
     return(
         <form onSubmit={handleSubmit(onSubmit)} style={{display: 'flex', flexDirection: 'column'}}>
+            {errorMessage && <p className="error-message">{errorMessage}</p>}
+            {errors.root && <div className="error-message">{errors.root.message}</div>}
             <label className={'color-3 primary-font'} style={{marginBottom: '10px'}}>Email Address:
                 <input 
                     type="email" 
                     {...register('email')}
                     style={{width: '100%'}}
                 />
-                {errors.email && <div>{errors.email.message}</div>}
+                {errors.email && <div className="error-message">{errors.email.message}</div>}
             </label>
             <label className={'color-3 primary-font'} style={{marginBottom: '10px'}}>First Name:
                 <input 
@@ -78,7 +81,7 @@ export default function Register(){
                     {...register('firstName')}
                     style={{width: '100%'}}
                 />
-                {errors.firstName && <div>{errors.firstName.message}</div>}
+                {errors.firstName && <div className="error-message">{errors.firstName.message}</div>}
             </label>
             <label className={'color-3 primary-font'} style={{marginBottom: '10px'}}>Last Name:
                 <input 
@@ -86,7 +89,7 @@ export default function Register(){
                     {...register('lastName')}
                     style={{width: '100%'}}
                 />
-                {errors.lastName && <div>{errors.lastName.message}</div>}
+                {errors.lastName && <div className="error-message">{errors.lastName.message}</div>}
             </label>
             <label className={'color-3 primary-font'} style={{marginBottom: '10px'}}>Password:
                 <input 
@@ -94,7 +97,7 @@ export default function Register(){
                     {...register('password')}
                     style={{width: '100%'}}
                 />
-                {errors.password && <div>{errors.password.message}</div>}
+                {errors.password && <div className="error-message">{errors.password.message}</div>}
             </label>
             <label className={'color-3 primary-font'} style={{marginBottom: '10px'}}>Confirm Password:
                 <input 
@@ -102,19 +105,16 @@ export default function Register(){
                     {...register('confirmPassword')}
                     style={{width: '100%'}}
                 />
-                {errors.confirmPassword && <div>{errors.confirmPassword.message}</div>}
+                {errors.confirmPassword && <div className="error-message">{errors.confirmPassword.message}</div>}
             </label>
-            <p>{errorMessage}</p>
             <div style={{display: 'flex', width: '100%', justifyContent: 'space-between'}}>
-               <button disabled={isSubmitting} className="remove-button-style button" onClick={() => {navigate('/login')}}>
+               <div className="remove-button-style button" onClick={() => {!isSubmitting && navigate('/login')}}>
                     <span className={'primary-font color-6'}>{isSubmitting ? "Loading..." : "Log In"}</span>
-                </button>
+                </div>
                 <button disabled={isSubmitting} type="submit" className="button">
                     <span className={'primary-font'}>{isSubmitting ? "Loading..." : "Register"}</span>
                 </button>
             </div>
-            
-            {errors.root && <div>{errors.root.message}</div>}
         </form>
     )
 }

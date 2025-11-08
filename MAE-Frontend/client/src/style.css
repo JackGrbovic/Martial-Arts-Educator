@@ -166,9 +166,11 @@
 }
 
 .lesson-container{
-    width: 80%;
+    width: 70%;
     padding: 20px 20px 20px 20px;
     box-sizing: border-box;
+    align-self: center;
+    margin-top: 20px;
 }
 
 .test-container{
@@ -677,6 +679,24 @@
     font-size: 20px;
 }
 
+.test-top-row-margin-top{
+    margin-top: 35px;
+}
+
+.first-or-next-step-text{
+    text-align: center;
+    font-size: 20px;
+    font-family: var(--primary-font);
+    letter-spacing: var(--letter-spacing);
+    width: 100%;
+}
+
+.error-message{
+    color: white;
+    font-family: var(--secondary-font);
+    margin: 0 0 5px 0;
+}
+
 @media (max-width: 1300px){
     .lesson-move-name{
         font-size: 20px;
@@ -731,11 +751,23 @@
     .small-label{
         font-size: 14px;
     }
+
+    .first-or-next-step-text{
+        font-size: 17px;
+    }
 }
 
 @media (max-width: 460px) {
     .mobile-dashboard-width, .lesson-container{
         width: 370px;
+    }
+
+    .test-top-row-margin-top{
+        margin-top: 0;
+    }
+
+    .first-or-next-step-text{
+        font-size: 12px;
     }
 }
 

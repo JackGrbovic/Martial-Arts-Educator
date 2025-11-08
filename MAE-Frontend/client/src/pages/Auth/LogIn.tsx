@@ -9,7 +9,7 @@ import { useState, useEffect } from 'react';
 
 const loginFormSchema = z.object({
     email: z.string().nonempty('Email is required.').email(),
-    password: z.string().nonempty('Email is required.')
+    password: z.string().nonempty('Password is required.')
 })
 
 type LoginForm = z.infer<typeof loginFormSchema>
@@ -18,6 +18,8 @@ export default function LogIn(){
     const navigate = useNavigate();
 
     const [userLoggedIn, setUserLoggedIn] = useState(false);
+
+    const [errorMessage, setErrorMessage] = useState<string>();
 
     const {
         register,
@@ -33,16 +35,18 @@ export default function LogIn(){
         try {
             const response = await api.post('/login', data);
             if(response.status === 200) {
-                navigate('/')
+                navigate('/');
+                window.location.reload();
             }
           } catch (error) {
-            console.error('Submission error:', error);
-            throw error;
+            setErrorMessage('Username or Password incorrect.')
           }
     }
 
     return(
         <form onSubmit={handleSubmit(onSubmit)} style={{display: 'flex', flexDirection: 'column'}}>
+            {errorMessage && <p className="error-message">{errorMessage}</p>}
+            {errors.root && <div className="error-message">{errors.root.message}</div>}
             <label className={'color-3 primary-font'} style={{marginBottom: '10px'}}>Email Address:
                 <input 
                     type="email" 
@@ -50,25 +54,23 @@ export default function LogIn(){
                     style={{width: '100%'}}
                 />
             </label>
-            {errors.email && <div>{errors.email.message}</div>}
+            {errors.email && <div className="error-message">{errors.email.message}</div>}
             <label className={'color-3 primary-font'} style={{marginBottom: '10px'}}>Password:
                 <input 
                     type="password" 
                     {...register('password')}
                     style={{width: '100%'}}
                 />
-                {errors.password && <div>{errors.password.message}</div>}
             </label>
+            {errors.password && <div className="error-message">{errors.password.message}</div>}
             <div style={{display: 'flex', width: '100%', justifyContent: 'space-between'}}>
-                <button disabled={isSubmitting} className="remove-button-style button" onClick={() => {navigate('/register')}}>
+                <div className="remove-button-style button" onClick={() => {!isSubmitting && navigate('/register')}}>
                     <span className={'primary-font color-6'}>{isSubmitting ? "Loading..." : "Register"}</span>
-                </button>
+                </div>
                 <button disabled={isSubmitting} type="submit" className="button" style={{maxWidth: '80px'}}>
                     <span className={'primary-font'}>{isSubmitting ? "Loading..." : "Log In"}</span>
                 </button>
             </div>
-            
-            {errors.root && <div>{errors.root.message}</div>}
         </form>
     )
 }

@@ -16,7 +16,7 @@ interface LessonBottomRowProps {
 export default function LessonBottomRow({currentStep, handleSetCurrentStep, steps, setSetupTestFlag, rearrangeBottomRow} : LessonBottomRowProps, ){
     return(
         <>
-            <div className='space-between-row-container color-1 larger-button-height' style={{marginTop: rearrangeBottomRow ? '10px' : '35px', flexWrap: rearrangeBottomRow ? 'wrap' : 'false'}}>
+            <div className='space-between-row-container color-1 larger-button-height' style={{marginTop: rearrangeBottomRow ? '10px' : '35px', flexWrap: rearrangeBottomRow ? 'wrap' : 'nowrap'}}>
                 <div className='hollow-container lesson-padding justify-center lesson-chevron-container-width' style={{marginRight: '20px'}}>
                     <p className='medium-title'>Step</p>
                     <div className='button-within-button background-color-1'>

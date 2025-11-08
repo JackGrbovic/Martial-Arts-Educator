@@ -64,9 +64,15 @@ export default function Lesson(){
     const [rearrangeBottomRow, setRearrangeBottomRow] = useState(false);
 
     useEffect(() => {
-        if (windowSize[0] < 800) setRearrangeBottomRow(true)
-            else setRearrangeBottomRow(false);
+        if (windowSize[0] < 800) {
+            setRearrangeBottomRow(true);
+        }
+        else {
+            setRearrangeBottomRow(false);
+        }
     }, [windowSize])
+
+    console.log("rearrangeBottomRow", rearrangeBottomRow)
 
     //get width and height of lesson-container then feed that to lesson video
     
@@ -96,17 +102,19 @@ export default function Lesson(){
         setCurrentStep(correctlyOrderedSteps[0] as LessonStep ?? null)
     }
 
+    console.log("videoHeight", videoHeight)
+
     const handleSetVideoSize = () => {
-        if (isMobile && iframeParentSize[0] > 800) setVideoHeight(600);
+        if (isMobile && iframeParentSize[0] > 800) setVideoHeight(500);
         else if (iframeParentSize[0] < 800 && iframeParentSize[0] > 450) setVideoHeight(300);
         else if (iframeParentSize[0] < 450) setVideoHeight(200);
-        else if (!isMobile) setVideoHeight(780);
+        else if (!isMobile) setVideoHeight(500);
     }
 
     return(
         <div className='full-width-and-height'>
             {!testData ? (
-                <div className='lesson-container' style={{marginTop: '20px'}} id="iframeParent">
+                <div className='lesson-container' id="iframeParent">
                     <div className='full-width flex'>
                         <p onClick={(e)=> {
                             navigate('/');
