@@ -70,6 +70,7 @@ namespace MAE_WebAPI.Controllers{
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password);
+                //save changes?
 
                 if (!result.Succeeded)
                 {

@@ -34,6 +34,7 @@ const userFormSchema = z.object({
 
 type UserForm = z.infer<typeof userFormSchema>
 
+
 export default function Register(){
     const {
         register,
@@ -45,6 +46,8 @@ export default function Register(){
       });
 
     const navigate = useNavigate();
+
+    const [errorMessage, setErrorMessage] = useState<string>();
 
     const onSubmit: SubmitHandler<UserForm> = async (data) => {
         try{
@@ -58,15 +61,14 @@ export default function Register(){
 
             if (!response.ok) {
                 const errorBody = await response.text();
-                throw new Error(`Failed to submit: ${response.status} ${errorBody}`);
+                setErrorMessage(`Failed to submit: ${response.status} ${errorBody}`);
             }
 
             const result = await response.json();
             return result;
         } catch (error) {
             //placeholder below
-            console.error('Submission error:', error);
-            throw error; // Re-throw if you want the calling component to handle it
+            setErrorMessage(`Submission error: ${error}`);
         }
     }
 
@@ -112,6 +114,7 @@ export default function Register(){
                 />
                 {errors.confirmPassword && <div>{errors.confirmPassword.message}</div>}
             </label>
+            <p>{errorMessage}</p>
             <div style={{display: 'flex', width: '100%', justifyContent: 'space-between'}}>
                <button disabled={isSubmitting} className="remove-button-style button" onClick={() => {navigate('/login')}}>
                     <span className={'primary-font color-6'}>{isSubmitting ? "Loading..." : "Log In"}</span>
@@ -119,7 +122,6 @@ export default function Register(){
                 <button disabled={isSubmitting} type="submit" className="button">
                     <span className={'primary-font'}>{isSubmitting ? "Loading..." : "Register"}</span>
                 </button>
-                
             </div>
             
             {errors.root && <div>{errors.root.message}</div>}

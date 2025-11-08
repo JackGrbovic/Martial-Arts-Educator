@@ -35,10 +35,6 @@ const router = createBrowserRouter([
         <ProtectedRoute>
           <Lesson />
         </ProtectedRoute> 
-      }, { path: "/dashboard", element: 
-        <ProtectedRoute>
-          <Dashboard />
-        </ProtectedRoute> 
       }, 
       { path: "register", element: <Register /> },
       { path: "login", element: <LogIn /> },
