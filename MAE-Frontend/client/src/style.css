@@ -282,6 +282,10 @@
     border-width: var(--border-width);
 }
 
+.chevron-selector-button-left, .chevron-selector-button-right{
+    width: 50%;
+}
+
 .button-within-button{
     height: 35px; 
     padding: 0 12px;
@@ -394,6 +398,7 @@
 
 .chevron{
     font-size: 30px;
+    text-align: center;
 }
 
 .martial-arts-selector{
@@ -725,5 +730,33 @@
 
     .small-label{
         font-size: 14px;
+    }
+}
+
+@media (max-width: 460px) {
+    .mobile-dashboard-width, .lesson-container{
+        width: 370px;
+    }
+}
+
+@media (max-width: 420px) {
+    .mobile-dashboard-width{
+        width: 340px;
+    }
+
+    .dbtr-container{
+        width: 31%;
+    }
+
+    .small-label{
+        font-size: 12px;
+    }
+
+    .hollow-container{
+        padding: 3px;
+    }
+
+    .label{
+        text-align: center;
     }
 }

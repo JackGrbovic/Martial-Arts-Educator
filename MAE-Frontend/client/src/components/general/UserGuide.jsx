@@ -40,10 +40,10 @@ export default function UserGuide({showUserGuide, showLearnedMoves, handleDispla
                         {isMobile && showUserGuide && (<span className="secondary-font color-6 info-label-font-size clickable"  onClick={() => {handleDisplayInfoPanel('ug')}}>↓</span>)}
                     </div>
                     
-                    <div className="background-color-6 border-radius border-color-1" style={{height: '230px', padding: '10px', border: '1px solid'}}>
-                        <div className="scroll" style={{height: '230px'}}>
-                            {userGuideText()}
-                        </div>
+                    <div className="faded-background border-radius border-color-1" style={{height: '230px', padding: '10px', border: '1px solid'}}>
+                            <div className="scroll" style={{height: '230px'}}>
+                                {userGuideText()}
+                            </div>
                     </div>
                 </div>
             }

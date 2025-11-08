@@ -3,6 +3,7 @@ import { api } from './apiClient.ts'
 import { Move, MartialArt, Step } from './components/test/testFunctions/TestTestData.ts';
 import { useNavigate } from 'react-router-dom';
 import { relative } from 'path';
+import { useLocation } from "react-router-dom";
 
 export type User = {
     id: string;
@@ -187,6 +188,12 @@ export type User = {
       user && setAllData();
       
     }, [user]);
+
+    const location = useLocation();
+
+    useEffect(() => {
+        // location.pathname == "/" && window.location.reload();   // automatically fires refresh endpoint on route change
+    }, []);
 
     const logout = () => {
       setUser(null);

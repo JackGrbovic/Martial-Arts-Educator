@@ -115,9 +115,7 @@ export default function LearnedSoFarPanel({selectedMartialArtLessons, selectedMa
                         </button>
                         ))
                     ) : (
-                        <div className='button background-color-1 learned-so-far-option flex-end'>
-                            <p className='small-label'>No moves.</p>
-                        </div>    
+                        <RenderFillerMoves />  
                     )}
                     {remainder ? (<RenderFillerMoves />) : <></>}
 

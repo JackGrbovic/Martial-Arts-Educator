@@ -89,7 +89,7 @@ export default function DashboardTopRow({selectedMartialArtLessons, reviews, sel
                     </div>
                 </>
             }
-            <div className='chevron-button-container button-height'>
+            <div className='chevron-button-container button-height dbtr-container'>
                 <button onClick={() => {handleSetMartialArt("left")}} className='remove-button-style left-only-radius chevron-selector-button-left hollow-container color-1 border-color-1'>
                     <p className='chevron color-1'>&lt;</p>
                 </button>
@@ -97,12 +97,12 @@ export default function DashboardTopRow({selectedMartialArtLessons, reviews, sel
                     <p className='chevron color-1'>&gt;</p>
                 </button>
             </div>
-            <div className='hollow-container color-1'>
-                <p className='medium-title'>
+            <div className='hollow-container color-1 dbtr-container'>
+                <p className='medium-title full-width'>
                     {selectedMartialArt?.name}
                 </p>
             </div>
-            <div className='hollow-container color-1'>
+            <div className='hollow-container color-1 dbtr-container'>
                 <div className='button-within-button background-color-1 clickable' style={{margin: 'auto'}} onClick={() => {setLogout(true)}}>
                     <p className='small-label clickable-text color-2'>
                         Log Out

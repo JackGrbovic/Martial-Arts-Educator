@@ -66,7 +66,7 @@ export default function Register(){
         <form onSubmit={handleSubmit(onSubmit)} style={{display: 'flex', flexDirection: 'column'}}>
             <label className={'color-3 primary-font'} style={{marginBottom: '10px'}}>Email Address:
                 <input 
-                    type="text" 
+                    type="email" 
                     {...register('email')}
                     style={{width: '100%'}}
                 />
