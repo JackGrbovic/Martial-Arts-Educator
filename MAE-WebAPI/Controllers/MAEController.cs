@@ -70,8 +70,8 @@ namespace MAE_WebAPI.Controllers{
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password);
-                //save changes?
-
+                //signIn
+    
                 if (!result.Succeeded)
                 {
                     Console.WriteLine("Result failed");
@@ -146,7 +146,6 @@ namespace MAE_WebAPI.Controllers{
                     ValidateAudience = true,
                     ValidIssuer = configuration["JwtSettings:Issuer"],
                     ValidAudience = configuration["JwtSettings:Audience"],
-                    // Ignore expiry so we can inspect claims
                     ValidateLifetime = false
                 },
                 out var validatedToken
@@ -357,7 +356,7 @@ namespace MAE_WebAPI.Controllers{
 
             Response.Cookies.Delete("access_token");
 
-            return Ok();
+            return RedirectToPage("/");
         }
 
 

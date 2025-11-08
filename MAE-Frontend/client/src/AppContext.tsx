@@ -44,12 +44,6 @@ export type User = {
     const [userLoading, setUserLoading] = useState<boolean>(true);
 
     console.log("user", user)
-    console.log("martialArts", martialArts)
-    console.log("allSteps", allSteps)
-    console.log("unlearnedMoves", unlearnedMoves)
-    console.log("reviews", reviews)
-    console.log("loading", loading)
-    console.log("userLoading", userLoading)
 
     const fetchUserOnRefresh = async () => {
       try {
@@ -138,7 +132,6 @@ export type User = {
     // }
 
     const fetchAppData = async () => {
-      console.log("fetching app data")
       try {
         const response = await api.get("/get-app-data");
         localStorage.setItem('martialArts', JSON.stringify(response.data.martialArts));
@@ -156,11 +149,7 @@ export type User = {
     //write a function to fetch and set reviews (we can get filter reviews that are ready in the controller before sending them here)
 
     const handleSetAppData = (martialArtsData, stepsData) =>{
-      console.log("martialArtsData", martialArtsData)
-      console.log("stepsData", stepsData)
       setMartialArts(prev => {
-        console.log("SET martialArts → prev:", prev);
-        console.log("SET martialArts → new:", martialArtsData);
         return martialArtsData;
       });
       setAllSteps(stepsData);
@@ -175,7 +164,6 @@ export type User = {
     }, []);
 
     useEffect(() => {
-      console.log("useEffectMartialArts", martialArts)
     }, [martialArts])
 
 
@@ -184,14 +172,19 @@ export type User = {
     // }, [user, martialArts])
   
     useEffect(() => {
-      const storedMartialArts: string | null = localStorage.getItem('martialArts');
-      const parsedMartialArts: MartialArt[] | null = storedMartialArts ? JSON.parse(storedMartialArts) : null;
-      const storedSteps: string | null = localStorage.getItem('steps');
-      const parsedAllSteps: Step[] | null = storedSteps ? JSON.parse(storedSteps) : null;
-      parsedMartialArts !== null && parsedAllSteps !== null ? handleSetAppData(parsedMartialArts, parsedAllSteps) : fetchAppData();
-      if (parsedMartialArts && user?.learnedMoves) handleSetLessons(user, parsedMartialArts);
-      if (!userLoading) setLoading(false);
-    }, [user, userLoading]);
+      const setAllData = () => {
+        const storedMartialArts: string | null = localStorage.getItem('martialArts');
+        const parsedMartialArts: MartialArt[] | null = storedMartialArts ? JSON.parse(storedMartialArts) : null;
+        const storedSteps: string | null = localStorage.getItem('steps');
+        const parsedAllSteps: Step[] | null = storedSteps ? JSON.parse(storedSteps) : null;
+        parsedMartialArts !== null && parsedAllSteps !== null ? handleSetAppData(parsedMartialArts, parsedAllSteps) : fetchAppData();
+        if (parsedMartialArts && user?.learnedMoves) handleSetLessons(user, parsedMartialArts);
+        if (!userLoading) setLoading(false);
+      }
+
+      user && setAllData();
+      
+    }, [userLoading]);
 
     const logout = () => {
       setUser(null);

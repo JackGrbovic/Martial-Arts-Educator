@@ -27,7 +27,6 @@ export const refreshResponse = api.interceptors.request.use(
 //make sure this works in tandem with the above
 async function refresh(error){
     const originalRequest = error.config;
-
         if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
 
