@@ -109,7 +109,7 @@ export default function Lesson(){
                 <div className='lesson-container' style={{marginTop: '20px'}} id="iframeParent">
                     <div className='full-width flex'>
                         <p onClick={(e)=> {
-                            navigate('/dashboard');
+                            navigate('/');
                         }} className="color-1 secondary-font back-to-dashboard-text">
                             ← Dashboard 
                         </p>
@@ -124,7 +124,7 @@ export default function Lesson(){
                     )}
 
                 </div>) : (
-                    <Test isReviewsArg={false} testData={testData} navigationTarget={'/dashboard'}/>
+                    <Test isReviewsArg={false} testData={testData} navigationTarget={'/'}/>
                 )
             }
         </div>

@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { resolve } from "path";
 import { useNavigate } from "react-router-dom";
+import api from "../../apiClient.ts";
 
 const userFormSchema = z.object({
     firstName: z.string().nonempty('First Name is required.'),
@@ -51,23 +52,12 @@ export default function Register(){
 
     const onSubmit: SubmitHandler<UserForm> = async (data) => {
         try{
-            const response = await fetch('http://localhost:5240/api/mae/register', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            });
+            const response = await api.post('/register', JSON.stringify(data));
 
-            if (!response.ok) {
-                const errorBody = await response.text();
-                setErrorMessage(`Failed to submit: ${response.status} ${errorBody}`);
+            if(response.status === 200) {
+                navigate('/')
             }
-
-            const result = await response.json();
-            return result;
         } catch (error) {
-            //placeholder below
             setErrorMessage(`Submission error: ${error}`);
         }
     }
