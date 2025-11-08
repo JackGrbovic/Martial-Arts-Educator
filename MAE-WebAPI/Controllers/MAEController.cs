@@ -352,9 +352,14 @@ namespace MAE_WebAPI.Controllers{
             Console.WriteLine(User);
 
             //only useful when using Identity's tokens
-            // await _signInManager.SignOutAsync();
+            await _signInManager.SignOutAsync();
 
-            Response.Cookies.Delete("access_token");
+            Response.Cookies.Delete("access_token", new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+            });
 
             return RedirectToPage("/");
         }

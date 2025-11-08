@@ -184,7 +184,7 @@ export type User = {
 
       user && setAllData();
       
-    }, [userLoading]);
+    }, [user]);
 
     const logout = () => {
       setUser(null);
