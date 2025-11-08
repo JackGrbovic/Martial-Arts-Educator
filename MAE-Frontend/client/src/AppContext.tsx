@@ -44,6 +44,7 @@ export type User = {
     const [userLoading, setUserLoading] = useState<boolean>(true);
 
     console.log("user", user)
+    console.log("userLoading", userLoading)
 
     const fetchUserOnRefresh = async () => {
       try {
@@ -54,6 +55,7 @@ export type User = {
       } catch (err) {
         console.error("Auth error", err);
         setUser(null);
+        navigate('/login');
       } finally {
         setUserLoading(false);
       }
