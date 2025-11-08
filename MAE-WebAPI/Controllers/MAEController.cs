@@ -361,7 +361,7 @@ namespace MAE_WebAPI.Controllers{
                 SameSite = SameSiteMode.None,
             });
 
-            return RedirectToPage("/");
+            return Ok();
         }
 
 
