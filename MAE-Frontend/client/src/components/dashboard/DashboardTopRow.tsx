@@ -97,12 +97,12 @@ export default function DashboardTopRow({selectedMartialArtLessons, reviews, sel
                     <p className='chevron color-1'>&gt;</p>
                 </button>
             </div>
-            <div className='hollow-container color-1 dbtr-container'>
+            <div id="#dbtr-ma-container" className='hollow-container color-1 dbtr-container'>
                 <p className='medium-title full-width'>
                     {selectedMartialArt?.name}
                 </p>
             </div>
-            <div className='hollow-container color-1 dbtr-container'>
+            <div id="dbtr-logout-container" className='hollow-container color-1 dbtr-container'>
                 <div className='button-within-button background-color-1 clickable' style={{margin: 'auto'}} onClick={() => {setLogout(true)}}>
                     <p className='small-label clickable-text color-2'>
                         Log Out

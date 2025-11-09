@@ -122,14 +122,14 @@ export default function DashboardMainSection({selectedMartialArtLessons, selecte
                         
                         
                         {isMobile && showLearnedMoves && !showUserGuide &&
-                            <div className="flex full-width" style={{justifyContent: 'center'}}>
+                            <div className="flex full-width" style={{justifyContent: 'center', alignSelf: 'center'}}>
                                 <LearnedSoFarPanel countToDisplay={3} selectedMartialArtLessons={selectedMartialArtLessons} selectedMartialArtLearnedMoves={selectedMartialArtLearnedMoves} showLearnedMoves={showLearnedMoves} selectedMartialArt={selectedMartialArt} showUserGuide={showUserGuide} handleDisplayInfoPanel={handleDisplayInfoPanel}/>
                             </div>
                         }
 
 
                         {isMobile && showUserGuide && !showLearnedMoves &&
-                            <div className="flex full-width" style={{justifyContent: 'center'}}>
+                            <div className="flex full-width" style={{justifyContent: 'center', alignSelf: 'center'}}>
                                 <UserGuide showUserGuide={showUserGuide} setShowUserGuide={setShowUserGuide} showLearnedMoves={showLearnedMoves} handleDisplayInfoPanel={handleDisplayInfoPanel}/>
                             </div>
                         }

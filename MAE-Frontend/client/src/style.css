@@ -784,10 +784,14 @@
         font-size: 12px;
     }
 
-    .hollow-container{
+    #dbtr-logout-container{
         padding: 3px;
     }
-
+    
+    #dbtr-ma-container{
+        padding: 3px;
+    }
+    
     .label{
         text-align: center;
     }
