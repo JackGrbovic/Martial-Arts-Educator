@@ -785,11 +785,11 @@
     }
 
     #dbtr-logout-container{
-        padding: 3px;
+        padding: 3px !important;
     }
     
     #dbtr-ma-container{
-        padding: 3px;
+        padding: 3px !important;
     }
     
     .label{
