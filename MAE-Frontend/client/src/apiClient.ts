@@ -57,19 +57,19 @@ export const authApi = {
 
 const checkIfUrlShouldNotBeRefreshed = (url) => {
     if (url.includes('/refresh')) {
-        return true;
+        return false;
     }
     if (url.includes('/login')) {
-        return true;
+        return false;
     }
     if (url.includes('/login-link-request')) {
-        return true;
+        return false;
     }
     if (url.includes('/register')) {
-        return true;
+        return false;
     }
     if (url.includes('/complete-registration')) {
-        return true;
+        return false;
     }
 }
 
