@@ -1,16 +1,10 @@
 import React, { createContext, SetStateAction, useContext, useEffect, useState, useLayoutEffect } from 'react';
 import { api } from './apiClient.ts'
-import { Move, MartialArt, Step } from './components/test/testFunctions/TestTestData.ts';
+import { Move, MartialArt, Step, User } from './data/types.ts';
 import { useNavigate } from 'react-router-dom';
 import { relative } from 'path';
 import { useLocation } from "react-router-dom";
 
-export type User = {
-    id: string;
-    name: string;
-    learnedMoves: [];
-    reviews: []
-  };
   
   type AppContextType = {
     user: User | null;
@@ -21,7 +15,9 @@ export type User = {
     reviews: Move[];
     loading: boolean;
     logout: () => void;
-    setUser: SetStateAction<User | null>
+    setUser: SetStateAction<User | null>,
+    isTempUser : boolean,
+    isMobile: boolean
   };
   
   export const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -43,24 +39,47 @@ export type User = {
     const [reviews, setReviews] = useState();
     const [loading, setLoading] = useState(true);
     const [userLoading, setUserLoading] = useState<boolean>(true);
+    const [isTempUser, setIsTempUser] = useState<boolean>(null)
 
-    console.log("user", user)
-    console.log("userLoading", userLoading)
+    console.log('user', user)
+
 
     const fetchUserOnRefresh = async () => {
-      try {
-        const response = await api.post("/refresh");
-        const responseUser = response.data.user;
-        setReviews(responseUser.reviews);
-        setUser(responseUser);
-      } catch (err) {
-        console.error("Auth error", err);
-        setUser(null);
-        navigate('/login');
+        
+      try{
+        const response = await api.post("/refresh", { withCredentials : true });
+        
+        console.log('fetchUserOnRefresh response', response)
+        
+        if (response.status == 200){
+          const responseUser = response.data.user;
+          setReviews(responseUser.reviews);
+          setUser(responseUser);
+          setUserLoading(false);
+          return;
+        }        
+      } catch {
+        const tempUserFromStorage = JSON.parse(localStorage.getItem('user'));
+        if (tempUserFromStorage){
+          setUser(tempUserFromStorage);
+        }
+
+        else{
+            setUser({
+            id: 'tempUser',
+            name: '',
+            learnedMoves: [],
+            reviews: []
+          });
+        }
       } finally {
         setUserLoading(false);
       }
     };
+
+    const updateTempUser = () => {
+      localStorage.setItem('user', JSON.stringify(user));
+    }
 
     const handleSetLessons = (user, martialArts) => {
       let movesToLearn: Move[] = [];
@@ -167,14 +186,14 @@ export type User = {
     }, []);
 
     useEffect(() => {
-    }, [martialArts])
+      isTempUser != true && setIsTempUser(user?.id === "tempUser" ? true : false)
+      isTempUser && updateTempUser();
+    }, [user])
 
 
-    // useEffect(() => {
-    //   user && martialArts && handleSetLessons(user, martialArts);
-    // }, [user, martialArts])
-  
     useEffect(() => {
+      if (isTempUser) return;
+
       const setAllData = () => {
         const storedMartialArts: string | null = localStorage.getItem('martialArts');
         const parsedMartialArts: MartialArt[] | null = storedMartialArts ? JSON.parse(storedMartialArts) : null;
@@ -192,16 +211,16 @@ export type User = {
     const location = useLocation();
 
     useEffect(() => {
-        // location.pathname == "/" && window.location.reload();   // automatically fires refresh endpoint on route change
+        
     }, []);
 
     const logout = () => {
       setUser(null);
-      navigate('/login');
+      navigate('/');
     };
 
     return (
-      <AppContext.Provider value={{ user, martialArts, allSteps, unlearnedMoves, reviews, loading, logout, setUser, isMobile, iframeParentSize, windowSize, setIframeLoaded}}>
+      <AppContext.Provider value={{ user, martialArts, allSteps, unlearnedMoves, reviews, loading, logout, setUser, isMobile, iframeParentSize, windowSize, setIframeLoaded, isTempUser}}>
         <div style={{position: 'relative', bottom: '30px'}}>
           {children}
         </div>

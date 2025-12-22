@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TestStep, TestStepOption } from "./testFunctions/TestTestData";
+import { TestStep, TestStepOption } from "../../data/types.ts";
 import { useAppContext } from "../../AppContext.tsx";
 
 interface TestQuestionsProps {

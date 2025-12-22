@@ -50,8 +50,6 @@ export default function Lesson(){
     useEffect(() => {
     }, [])
 
-    console.log("currentMove", currentMove)
-
     useEffect(() => {
         martialArts && moveId && setCurrentMove(martialArts.find(ma => ma.id === martialArtId)?.moves.find(m => m.id === moveId))
 ;    }, [martialArts, moveId])
@@ -72,8 +70,6 @@ export default function Lesson(){
         }
     }, [windowSize])
 
-    console.log("rearrangeBottomRow", rearrangeBottomRow)
-
     //get width and height of lesson-container then feed that to lesson video
     
     const [videoHeight, setVideoHeight] = useState<number>();
@@ -89,8 +85,6 @@ export default function Lesson(){
         
     }, [currentMove]);
 
-    console.log("steps", steps)
-
     function handleSetStepsAndCurrentStep(){
         let correctlyOrderedSteps = []
         const originalSteps = JSON.parse(JSON.stringify(currentMove?.steps));
@@ -101,8 +95,6 @@ export default function Lesson(){
         setSteps(correctlyOrderedSteps);
         setCurrentStep(correctlyOrderedSteps[0] as LessonStep ?? null)
     }
-
-    console.log("videoHeight", videoHeight)
 
     const handleSetVideoSize = () => {
         if (isMobile && iframeParentSize[0] > 800) setVideoHeight(500);

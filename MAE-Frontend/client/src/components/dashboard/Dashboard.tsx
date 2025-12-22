@@ -6,6 +6,7 @@ import { Move, MartialArt } from '../test/testFunctions/TestTestData.ts';
 import { ScaffoldTestDataFromMoves } from '../test/testFunctions/ScaffoldTestDataFromIds.ts';
 import Test from "../test/Test.tsx";
 import { useNavigate } from 'react-router-dom';
+import { LearnedMove } from '../../data/types.ts';
 
 export default function Dashboard(){
     const { 
@@ -25,11 +26,31 @@ export default function Dashboard(){
     const [constructedReviews, setConstructedReviews] = useState();
     const [selectedMartialArtReviews, setSelectedMartialArtReviews] = useState();
     const [beginReviews, setBeginReviews] = useState(false);
+    const [nextReviewDateTime, setNextReviewDateTime] = useState()<Date>;
 
+    console.log('nextReviewDateTime', nextReviewDateTime)
 
     useEffect(() => {
         handleSetSelectedMartialArtLessons();
     }, [])
+
+    console.log('user?.learnedMoves', user?.learnedMoves)
+
+    useEffect(() => {
+        const learnedMoveDateTimes = user?.learnedMoves.map((lm) => {
+            return new Date(lm.nextReviewDate).getTime();
+        })
+
+        if (reviews.length == 0){
+            const learnedMovesOrderedByLowestDateTime = learnedMoveDateTimes.sort((a, b) => a < b);
+            const nextReviewDateTime = new Date(learnedMovesOrderedByLowestDateTime[0]);
+            const nextReviewDateTimeLocalString = nextReviewDateTime.toLocaleString('en-GB', {
+                dateStyle: 'medium',
+                timeStyle: 'short',
+            });
+            setNextReviewDateTime(nextReviewDateTimeLocalString)
+        }
+    }, [user])
 
     useEffect(() => {
         handleSetSelectedMartialArtLessons();
@@ -91,8 +112,14 @@ export default function Dashboard(){
 
     const handleSetSelectedMartialArtLessons = () => {
         if (!selectedMartialArt || !user?.learnedMoves) return;
+        const userLearnedMoves = JSON.parse(JSON.stringify(user.learnedMoves))
+        
         const learnedMoveIds = new Set(user.learnedMoves.map(lm => lm.moveId));
-        const lessonsForSelectedMartialArt = selectedMartialArt.moves.filter(m => !learnedMoveIds.has(m.id));
+        const lessonsForSelectedMartialArt = selectedMartialArt.moves.filter(m => {
+            if (!learnedMoveIds.has(m.id)){
+                return m
+            }
+        })
 
         setSelectedMartialArtLessons(lessonsForSelectedMartialArt)
     }
@@ -112,7 +139,7 @@ export default function Dashboard(){
             <>loading...</>
         ) : !loading && !beginReviews ? (
             <div className={`dashboard-container ${isMobile ? 'mobile-dashboard-width mobile-dashboard-height' : 'dashboard-container-width'}`}>
-                <DashboardTopRow selectedMartialArtReviews={selectedMartialArtReviews} selectedMartialArtLessons={selectedMartialArtLessons} reviews={selectedMartialArtReviews} selectedMartialArt={selectedMartialArt} setSelectedMartialArt={setSelectedMartialArt} handleSetBeginReviews={handleSetBeginReviews} beginReviews={beginReviews}/>
+                <DashboardTopRow nextReviewDateTime={nextReviewDateTime} selectedMartialArtReviews={selectedMartialArtReviews} selectedMartialArtLessons={selectedMartialArtLessons} reviews={selectedMartialArtReviews} selectedMartialArt={selectedMartialArt} setSelectedMartialArt={setSelectedMartialArt} handleSetBeginReviews={handleSetBeginReviews} beginReviews={beginReviews}/>
                 <DashboardMainSection selectedMartialArtLessons={selectedMartialArtLessons} selectedMartialArtLearnedMoves={selectedMartialArtLearnedMoves} selectedMartialArt={selectedMartialArt} handleSetBeginReviews={handleSetBeginReviews} reviews={reviews}/>
                 { isMobile && 
                     <div className="space-between-row-container full-width button-height" style={{marginTop: '10px'}}>

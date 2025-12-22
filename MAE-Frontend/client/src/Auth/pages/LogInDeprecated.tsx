@@ -31,7 +31,6 @@ export default function LogIn(){
       });
 
     const onSubmit: SubmitHandler<LoginForm> = async (data) => {
-        console.log("submitting")
         try {
             const response = await api.post('/login', data);
             if(response.status === 200) {

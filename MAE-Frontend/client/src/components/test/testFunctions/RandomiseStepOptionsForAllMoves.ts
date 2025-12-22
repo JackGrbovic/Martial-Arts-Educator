@@ -1,4 +1,4 @@
-import { TestStep, TestStepOption, TestMove } from "./TestTestData";
+import { TestStep, TestStepOption, TestMove } from "../../../data/types";
 
 export default function RandomiseStepOptionsForAllTestMoves(movesForTest : TestMove[]){
     let updatedMoves : TestMove[] = JSON.parse(JSON.stringify(movesForTest));

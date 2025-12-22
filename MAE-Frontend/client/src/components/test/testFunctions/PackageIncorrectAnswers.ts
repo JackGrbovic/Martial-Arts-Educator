@@ -1,4 +1,4 @@
-import { TestMove, TestStep, TestStepOption } from "./TestTestData"
+import { TestMove, TestStep, TestStepOption } from "../../../data/types"
 
 
 export type PackagedIncorrectAnswersObject = {

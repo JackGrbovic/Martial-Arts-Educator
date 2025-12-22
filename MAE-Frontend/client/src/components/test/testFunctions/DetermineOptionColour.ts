@@ -1,4 +1,4 @@
-import { TestStepOption } from "./TestTestData"
+import { TestStepOption } from "../../../data/types"
 
 export default function DetermineOptionColor(option : TestStepOption){
     if (option.selected 

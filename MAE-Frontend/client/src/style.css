@@ -697,6 +697,17 @@
     margin: 0 0 5px 0;
 }
 
+.next-review-label-component{
+    width: 100%;
+    font-size: 12px;
+    text-align: center;
+}
+.next-review-date-component{
+    width: 100%;
+    font-size: 12px;
+    text-align: center;
+}
+
 @media (max-width: 1300px){
     .lesson-move-name{
         font-size: 20px;

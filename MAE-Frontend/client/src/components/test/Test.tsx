@@ -7,11 +7,12 @@ import DetermineTestScore from './testFunctions/DetermineTestScore.ts';
 import DetermineOptionColor, {DetermineOptionColorForResults} from './testFunctions/DetermineOptionColour.ts';
 import DetermineIsFinalQuestion from './testFunctions/DetermineIsFinalQuestion.ts';
 import PackageIncorrectAnswers, { AnswerPair, PackagedIncorrectAnswersObject } from './testFunctions/PackageIncorrectAnswers.ts';
-import { Move, Step, TestMove, TestStep } from './testFunctions/TestTestData.ts';
+import { Move, Step, TestMove, TestStep } from '../../data/types.ts';
 import { useAppContext } from '../../AppContext.tsx';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import ScaffoldMoveStepOptionsFromStepData from './testFunctions/ScaffoldMoveStepOptionsFromStepData.ts';
 import { addUserLearnedMove, updateUserLearnedMoves } from '../../apiClient.ts';
+import ScaffoldLearnedMovesForTempUser from './testFunctions/ScaffoldLearnedMovesForTempUser.ts';
 
 
 interface TestProps {
@@ -25,7 +26,8 @@ export default function Test({isReviewsArg, testData, navigationTarget}){
     const { 
         setUser,
         user,
-        isMobile
+        isMobile,
+        isTempUser
     } = useAppContext();
 
     const navigate = useNavigate();
@@ -87,11 +89,23 @@ export default function Test({isReviewsArg, testData, navigationTarget}){
                 } else if (user?.learnedMoves.find(lm => lm.id === currentMove.id)){
                     return
                 } else {
-                    const newUserLearnedMoves = await addUserLearnedMove(moves[0].id, moves[0].martialArtId);
-                    if (newUserLearnedMoves.length){
-                        const newUser = { ...user, learnedMoves: newUserLearnedMoves };
-                        newUser.learnedMoves = newUserLearnedMoves;
+                    if(isTempUser){
+                        //need to scaffold learnedMoves to match the type in API model
+                        let newUser = JSON.parse(JSON.stringify(user));
+                        const scaffoldedLearnedMovesForTempUser = ScaffoldLearnedMovesForTempUser(moves, newUser, currentMove);
+                        scaffoldedLearnedMovesForTempUser.forEach((lm) => {
+                            newUser.learnedMoves.push(lm)
+                        })
+                        
                         setUser(newUser);
+                    }
+                    else{
+                        const newUserLearnedMoves = await addUserLearnedMove(moves[0].id, moves[0].martialArtId);
+                        if (newUserLearnedMoves.length){
+                            const newUser = { ...user, learnedMoves: newUserLearnedMoves };
+                            newUser.learnedMoves = newUserLearnedMoves;
+                            setUser(newUser);
+                        }
                     }
                 }
             }

@@ -33,6 +33,9 @@ builder.Services.AddDbContext<MAEDbContext>(options =>
 });
 
 builder.Services.AddScoped<MAEControllerFunctionProvider>();
+builder.Services.AddScoped<MAESignInHandler>();
+builder.Services.AddScoped<Hasher>();
+
 
 var allowedOrigins = new[] { "https://martial-arts-educator-client.onrender.com", "http://localhost:3000", "https://maeapp.net", "https://www.maeapp.net" };
 //var allowedOrigins = builder.Configuration["AllowedOrigins"] ?? "https://martial-arts-educator-client.onrender.com";
@@ -48,16 +51,17 @@ builder.Services.AddCors(options =>
     });
 });
 
-// var thing = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"]));
-// Console.WriteLine(thing);
-
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new()
         {
             ValidateIssuer = true,
             ValidateAudience = true,
-            ValidateLifetime = false,
+            ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["JwtSettings:Issuer"].ToString(),
             ValidAudience = builder.Configuration["JwtSettings:Audience"].ToString(),
@@ -90,6 +94,10 @@ identityBuilder.AddSignInManager<SignInManager<ApplicationUser>>();
 identityBuilder.AddTokenProvider<DataProtectorTokenProvider<ApplicationUser>>(TokenOptions.DefaultProvider);
 
 builder.Services.AddSingleton<TokenProvider>();
+
+builder.Services.Configure<ResendOptions>(
+    builder.Configuration.GetSection("Resend")
+);
 
 var app = builder.Build();
 

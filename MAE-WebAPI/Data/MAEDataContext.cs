@@ -21,19 +21,11 @@ public class MAEDbContext : IdentityDbContext<ApplicationUser>
             .HasForeignKey(lm => lm.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // builder.Entity<LearnedStep>()
-        //     .HasOne(ls => ls.LearnedMove)
-        //     .WithMany(lm => lm.LearnedSteps)
-        //     .HasForeignKey(ls => ls.LearnedMoveId)
-        //     .OnDelete(DeleteBehavior.Restrict);
-
         builder.Entity<LearnedMove>()
            .HasOne(lm => lm.Move)
            .WithMany()
            .HasForeignKey(lm => lm.MoveId)
            .OnDelete(DeleteBehavior.Restrict);
-
-
     }
 
     public DbSet<MartialArt> MartialArts { get; set; }
@@ -41,5 +33,6 @@ public class MAEDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Step> Steps { get; set; }
     public DbSet<StepOption> StepOptions { get; set; }
     public DbSet<LearnedMove> LearnedMoves { get; set; }
-    // public DbSet<LearnedStep> LearnedSteps { get; set; }
+    public DbSet<MagicLinkToken> MagicLinkTokens { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
 }

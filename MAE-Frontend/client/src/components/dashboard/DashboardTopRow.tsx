@@ -2,14 +2,12 @@ import React, { useEffect, useState } from "react"
 import { useAppContext } from "../../AppContext.tsx"
 import { useNavigate } from "react-router-dom";
 import { api } from "../../apiClient.ts";
+import LoginWithLink from "../../Auth/pages/LoginWithLink.tsx";
 
-export default function DashboardTopRow({selectedMartialArtLessons, reviews, selectedMartialArt, setSelectedMartialArt, beginReviews, handleSetBeginReviews, selectedMartialArtReviews}){
-    const { martialArts, isMobile } = useAppContext();
+export default function DashboardTopRow({nextReviewDateTime, selectedMartialArtLessons, reviews, selectedMartialArt, setSelectedMartialArt, beginReviews, handleSetBeginReviews, selectedMartialArtReviews}){
+    const { martialArts, isMobile, isTempUser } = useAppContext();
     const [logout, setLogout] = useState(false);
     const navigate = useNavigate();
-
-    console.log("selectedMartialArt", selectedMartialArt);
-    console.log("martialArts", martialArts);
 
     useEffect(() => {
         martialArts && setSelectedMartialArt(martialArts[0])
@@ -51,6 +49,10 @@ export default function DashboardTopRow({selectedMartialArtLessons, reviews, sel
         }
     }
 
+    const redirectToRegister = () => {
+        navigate('/register');
+    }
+
     useEffect(() => {
         const handleLogout = async ()=> {
             await api.post('/logout')
@@ -61,7 +63,6 @@ export default function DashboardTopRow({selectedMartialArtLessons, reviews, sel
             navigate('/login')
         }
     }, [logout])
-
 
     return(
         <div className='space-between-row-container button-height flex-wrap'>
@@ -77,15 +78,32 @@ export default function DashboardTopRow({selectedMartialArtLessons, reviews, sel
                             </p>
                         </div>
                     </div>
-                    <div className={`${selectedMartialArtReviews?.length ? 'clickable' : ''} hollow-container color-1`}>
-                        <p className={`${selectedMartialArtReviews?.length ? 'clickable-text' : ''} label color-1`} onClick={handleSetBeginReviews}>
-                            Reviews
-                        </p>
-                        <div className='button-within-button background-color-1'>
-                            <p className='small-label color-2'>
-                                {reviews?.length ?? 0}
-                            </p>
-                        </div>
+                    <div className={`${selectedMartialArtReviews?.length ? 'clickable' : ''} hollow-container color-1`} style={{display: 'inline-block', padding: '2px'}}>
+                        {nextReviewDateTime ? (
+                            <>
+                                <p className={'next-review-label-component label color-1'} onClick={isTempUser ? redirectToRegister : handleSetBeginReviews}>
+                                    Next Review Date
+                                </p>
+                                <p className={'next-review-date-component label color-1'} onClick={isTempUser ? redirectToRegister : handleSetBeginReviews}>
+                                    {nextReviewDateTime}
+                                </p>
+                            </>
+                            
+                        ) : (
+                                <>
+                                    <p className={`${selectedMartialArtReviews?.length ? 'clickable-text' : ''} label color-1`} onClick={isTempUser ? redirectToRegister : handleSetBeginReviews}>
+                                        Reviews
+                                    </p>
+                                    <div className='button-within-button background-color-1'>
+                                        <p className='small-label color-2'>
+                                            {reviews?.length ?? 0}
+                                        </p>
+                                    </div>
+                                </>
+                                
+                            )
+                        }
+                        
                     </div>
                 </>
             }
@@ -103,11 +121,19 @@ export default function DashboardTopRow({selectedMartialArtLessons, reviews, sel
                 </p>
             </div>
             <div id="dbtr-logout-container" className='hollow-container color-1 dbtr-container'>
-                <div className='button-within-button background-color-1 clickable' style={{margin: 'auto'}} onClick={() => {setLogout(true)}}>
-                    <p className='small-label clickable-text color-2'>
-                        Log Out
-                    </p>
-                </div>
+                {isTempUser ? (
+                    <div className='button-within-button background-color-1 clickable' style={{margin: 'auto'}} onClick={() => {navigate('/login-link-request')}}>
+                        <p className='small-label clickable-text color-2'>
+                            Log In
+                        </p>
+                    </div>
+                ) : (
+                    <div className='button-within-button background-color-1 clickable' style={{margin: 'auto'}} onClick={() => {setLogout(true)}}>
+                        <p className='small-label clickable-text color-2'>
+                            Log Out
+                        </p>
+                    </div>
+                )}
             </div>
             
             

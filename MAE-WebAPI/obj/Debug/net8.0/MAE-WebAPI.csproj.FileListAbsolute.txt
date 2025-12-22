@@ -187,3 +187,6 @@
 /Users/jackgrbovic/Documents/Work/MartialArtsEducator/MAE-WebAPI/bin/Debug/net8.0/Npgsql.dll
 /Users/jackgrbovic/Documents/Work/MartialArtsEducator/MAE-WebAPI/bin/Debug/net8.0/Npgsql.EntityFrameworkCore.PostgreSQL.dll
 /Users/jackgrbovic/Documents/Work/MartialArtsEducator/MAE-WebAPI/obj/Debug/net8.0/MAE-WebAPI.sourcelink.json
+/Users/jackgrbovic/Documents/Work/MartialArtsEducator/MAE-WebAPI/bin/Debug/net8.0/Microsoft.AspNetCore.WebUtilities.dll
+/Users/jackgrbovic/Documents/Work/MartialArtsEducator/MAE-WebAPI/bin/Debug/net8.0/Microsoft.Net.Http.Headers.dll
+/Users/jackgrbovic/Documents/Work/MartialArtsEducator/MAE-WebAPI/bin/Debug/net8.0/Resend.dll

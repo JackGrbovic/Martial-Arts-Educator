@@ -8,13 +8,15 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import Register from './pages/Auth/Register.tsx';
+import Register from './Auth/pages/Register.tsx';
 import Test from './components/test/Test.tsx';
 import Dashboard from './components/dashboard/Dashboard.tsx';
 import Lesson from './components/lesson/Lesson.tsx';
-import LogIn from './pages/Auth/LogIn.tsx';
-import CookieTest from './pages/Auth/CookieTest.tsx';
+import LoginLinkRequest from './Auth/pages/LoginLinkRequest.tsx';
+import CookieTest from './Auth/pages/CookieTest.tsx';
 import ProtectedRoute from './ProtectedRoute.tsx';
+import LoginWithLink from './Auth/pages/LoginWithLink.tsx';
+import CompleteRegistration from './Auth/pages/CompleteRegistration.tsx';
 
 
 //need to figure out route params for test (if it's a lesson/reviews, just one martial art or more)
@@ -37,7 +39,9 @@ const router = createBrowserRouter([
         </ProtectedRoute> 
       }, 
       { path: "register", element: <Register /> },
-      { path: "login", element: <LogIn /> },
+      { path: "login-link-request", element: <LoginLinkRequest /> },
+      { path: "login-with-link", element: <LoginWithLink /> },
+      { path: "complete-registration", element: <CompleteRegistration /> }
     ],
   },
 ]);

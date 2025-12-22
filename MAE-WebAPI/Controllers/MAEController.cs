@@ -1,9 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
 using MAE_WebAPI.Models;
-using System.Reflection.Metadata.Ecma335;
-using Microsoft.AspNetCore.Http.HttpResults;
 using MAE_WebAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
@@ -12,13 +8,11 @@ using System.ComponentModel.DataAnnotations;
 using MAE_WebAPI.Auth;
 using Microsoft.AspNetCore.Authorization;
 using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using System.Security.Claims;
 using MAE_WebAPI.Controllers.MAEControllerFunctions;
-using System.Security.Cryptography;
-using Microsoft.VisualBasic;
-using Microsoft.AspNetCore.JsonPatch.Internal;
+using Resend;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using Microsoft.Extensions.Options;
 
 namespace MAE_WebAPI.Controllers{
     [Route("api/[controller]")]
@@ -30,20 +24,45 @@ namespace MAE_WebAPI.Controllers{
         private readonly TokenProvider _tokenProvider;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly MAEControllerFunctionProvider _mAEControllerFunctionProvider;
+        private readonly Hasher _hasher;
+        private readonly MAESignInHandler _mAESignInHandler;
+        private static string _resendKey;
 
-        public MAEController(MAEDbContext context, UserManager<ApplicationUser> userManager, TokenProvider tokenProvider, SignInManager<ApplicationUser> signInManager, MAEControllerFunctionProvider mAEControllerFunctionProvider)
+        public MAEController(MAEDbContext context, UserManager<ApplicationUser> userManager, TokenProvider tokenProvider, SignInManager<ApplicationUser> signInManager, MAEControllerFunctionProvider mAEControllerFunctionProvider, Hasher hasher, MAESignInHandler mAESignInHandler, IOptions<ResendOptions> options)
         {
             _context = context;
             _userManager = userManager;
             _tokenProvider = tokenProvider;
             _signInManager = signInManager;
             _mAEControllerFunctionProvider = mAEControllerFunctionProvider;
+            _hasher = hasher;
+            _mAESignInHandler = mAESignInHandler;
+            _resendKey = options.Value.ApiKey;
+        }
+
+        [AllowAnonymous]
+        [HttpGet("baseUrlTest")]
+        public async Task<IActionResult> BaseUrlTest()
+        {
+            string newUrl = $"{Request.Scheme}://{Request.Host}/{Request.PathBase}";
+
+            IResend resend = ResendClient.Create( "re_gUzipPcY_57KiwQyqDFiMwhkrfuqvj5vh" );
+            
+            var resp = await resend.EmailSendAsync( new EmailMessage()
+            {
+                From = "services@maeapp.net",
+                To = "jackgrbovic@googlemail.com",
+                Subject = "Magic Link",
+                HtmlBody = $"<p>Thank you for registering. Please use <a href=\"{newUrl}\">this link</a> to log in.</p>",
+            } );
+
+            return Ok(resp);
         }
 
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterFormRequest model)
+        public async Task<IActionResult> Register(RegistrationDto registrationDto)
         {
             try
             {
@@ -52,34 +71,40 @@ namespace MAE_WebAPI.Controllers{
                     return BadRequest(ModelState);
                 }
 
-                var existingUser = await _userManager.FindByEmailAsync(model.Email);
-                if (existingUser != null)
+                var userInDbByEmail = await _context.Users.FirstOrDefaultAsync(x => x.Email == registrationDto.Email);
+                if (userInDbByEmail != null && userInDbByEmail.EmailConfirmed == true)
                 {
-                    return BadRequest(new { error = "A user with this email already exists." });
+                    return BadRequest("Email already in use.");
                 }
 
-                var id = Guid.NewGuid();
+                var userInDbByUsername = await _context.Users.FirstOrDefaultAsync(x => x.UserName == registrationDto.UserName);
+                if (userInDbByUsername != null && userInDbByEmail.EmailConfirmed == true)
+                {
+                    return BadRequest("Username already in use.");
+                }
+
+                if (userInDbByEmail != null && userInDbByEmail.EmailConfirmed != true)
+                {
+                    await _mAEControllerFunctionProvider.CreateAndSendMagicLink(false, Request, userInDbByEmail, _tokenProvider, registrationDto.Email, _hasher);
+                    return Ok();
+                }
 
                 var user = new ApplicationUser
                 {
-                    UserName = model.Email,
-                    Id = id.ToString(),
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    Email = model.Email
+                    UserName = registrationDto.UserName,
+                    Email = registrationDto.Email
                 };
 
-                var result = await _userManager.CreateAsync(user, model.Password);
-                //signIn
-    
+                var result = await _userManager.CreateAsync(user);
+
                 if (!result.Succeeded)
                 {
-                    Console.WriteLine("Result failed");
-                    Console.WriteLine(result.Errors);
                     return BadRequest(ModelState);
                 }
-                Console.WriteLine("Result succeeded");
-                return Ok(result);
+                
+                await _mAEControllerFunctionProvider.CreateAndSendMagicLink(false, Request, user, _tokenProvider, registrationDto.Email, _hasher);
+
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -88,8 +113,177 @@ namespace MAE_WebAPI.Controllers{
             }
         }
 
-        //declare reviews method elsewhere and call it in here after validating user
-        [Authorize]
+        [HttpPost("delete-grob")]
+        public async Task<IActionResult> DeleteGrob()
+        {
+            await _context.Users.Where(x => x.Email == "jackgrbovic@googlemail.com").ExecuteDeleteAsync();
+            return Ok();
+        }
+
+        [HttpPost("complete-registration")]
+        public async Task<IActionResult> CompleteRegistration(CompleteRegistrationDto completeRegistrationDto)
+        {
+            List<LearnedMove> registrationLearnedMoves = new();
+            foreach(TempUserLearnedMoveDto tempUserLearnedMove in completeRegistrationDto.TempUserLearnedMoves)
+            {
+                registrationLearnedMoves.Add(new LearnedMove
+                {
+                    MoveId = tempUserLearnedMove.MoveId,
+                    Id = Guid.NewGuid().ToString(),
+                    UserId = tempUserLearnedMove.UserId,
+                    EaseFactor = 1,
+                    NextReviewDate = DateTime.UtcNow.AddHours(1),
+                    MartialArtId = tempUserLearnedMove.MartialArtId
+                });
+            }
+
+            List<LearnedMoveDto> registrationLearnedMoveDtos = new();
+            foreach(TempUserLearnedMoveDto tempUserLearnedMove in completeRegistrationDto.TempUserLearnedMoves)
+            {
+                registrationLearnedMoveDtos.Add(new LearnedMoveDto
+                {
+                    MoveId = tempUserLearnedMove.MoveId,
+                    Id = Guid.NewGuid().ToString(),
+                    UserId = tempUserLearnedMove.UserId,
+                    EaseFactor = 1,
+                    NextReviewDate = DateTime.UtcNow.AddHours(1),
+                    MartialArtId = tempUserLearnedMove.MartialArtId
+                });
+            }
+
+            var signInResult = await _mAESignInHandler.CompleteRegistrationAsync(completeRegistrationDto.tokenHash, _tokenProvider, _hasher, Response, _mAEControllerFunctionProvider, registrationLearnedMoveDtos);
+            
+            if (signInResult.Success == false)
+            {
+                return BadRequest("Failed to complete registration.");
+            }
+
+            var userInDb = await _context.Users.FirstOrDefaultAsync(x => x.Id == signInResult.User.Id);
+            if (userInDb != null) userInDb.EmailConfirmed = true;
+            if (registrationLearnedMoves.Count() > 0) 
+            {
+                userInDb.LearnedMoves = registrationLearnedMoves;
+            }
+
+            RefreshToken refreshToken = new RefreshToken
+            {
+                Id = Guid.NewGuid().ToString(),
+                TokenHash = signInResult.RefreshTokenHash,
+                UserId = userInDb.Id,
+                ExpiryDate = DateTime.UtcNow.AddDays(20),
+                ApplicationUser = userInDb,
+                Created = DateTime.UtcNow,
+                IsRevoked = false
+            };
+
+            await _context.RefreshTokens.AddAsync(refreshToken);
+            await _context.SaveChangesAsync();
+
+            var newAccessToken = _tokenProvider.CreateTokenUsingUser(userInDb);
+            Response.Cookies.Append("access_token", newAccessToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                // SameSite = SameSiteMode.None,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddMinutes(5)
+            });
+
+            Response.Cookies.Append("refresh_token", signInResult.RefreshTokenHash, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                // SameSite = SameSiteMode.None,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddDays(20)
+            });
+
+            return Ok(signInResult.User);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("login-link-request")]
+        public async Task<IActionResult> LoginLinkRequest(LoginLinkRequestDto loginLinkRequestDto)
+        {
+            //for the data need to ensure it maps properly between js and .net, can't remember how but a DTO is probably necessary
+            var userFromEmail = await _context.Users.FirstOrDefaultAsync(x => x.Email == loginLinkRequestDto.email);
+            if (userFromEmail == null)
+            {
+                return BadRequest("Email not registered.");
+            }
+            else if (userFromEmail != null)
+            {
+                await _mAEControllerFunctionProvider.CreateAndSendMagicLink(true, Request, userFromEmail, _tokenProvider, loginLinkRequestDto.email, _hasher);
+                return Ok();
+            } 
+            return BadRequest("Email not registered.");
+        }
+
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginHashDto loginHashDto)
+        {
+            //maybe veryify tokenHash in some way but not sure how
+            var signInResult = await _mAESignInHandler.SignInAsync(loginHashDto.tokenHash, _tokenProvider, _hasher, Response, _mAEControllerFunctionProvider);
+            if (signInResult.Success == false)
+            {
+                return BadRequest("Unable to login. Please try again or contact the system administrator.");
+            }
+
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == signInResult.User.Id);
+
+            RefreshToken refreshToken = new RefreshToken
+            {
+                Id = Guid.NewGuid().ToString(),
+                TokenHash = signInResult.RefreshTokenHash,
+                UserId = user.Id,
+                ExpiryDate = DateTime.UtcNow.AddDays(20),
+                ApplicationUser = user,
+                Created = DateTime.UtcNow,
+                IsRevoked = false
+            };
+
+            await _context.RefreshTokens.AddAsync(refreshToken);
+            await _context.SaveChangesAsync();
+
+            var newAccessToken = _tokenProvider.CreateTokenUsingUser(user);
+            Response.Cookies.Append("access_token", newAccessToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                // SameSite = SameSiteMode.None,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddMinutes(5)
+            });
+
+            Response.Cookies.Append("refresh_token", signInResult.RefreshTokenHash, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                // SameSite = SameSiteMode.None,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddDays(20)
+            });
+
+            return Ok(signInResult.User);
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            Response.Cookies.Delete("access_token", new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                // SameSite = SameSiteMode.None,
+                SameSite = SameSiteMode.Strict,
+            });
+
+            return Ok();
+        }
+
+
+
         [HttpGet("get-app-data")]
         public async Task<IActionResult> GetAppData()
         {
@@ -126,68 +320,78 @@ namespace MAE_WebAPI.Controllers{
             return BadRequest(ModelState);
         }
 
+        
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh(IConfiguration configuration)
         {
-            var token = Request.Cookies["access_token"];
-            if (string.IsNullOrEmpty(token))
-                return Unauthorized("No token found.");
+            var refreshToken = Request.Cookies["refresh_token"];
+            if (string.IsNullOrEmpty(refreshToken))
+                //delete token
+                return Unauthorized("No token found. Continuing with tempUser");
 
             var tokenHandler = new JwtSecurityTokenHandler();
 
-            //the below may be redundant, if not, we've at the least duplicated code from program.cs
-            var principal = tokenHandler.ValidateToken(
-                token,
-                new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Key"])),
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidIssuer = configuration["JwtSettings:Issuer"],
-                    ValidAudience = configuration["JwtSettings:Audience"],
-                    ValidateLifetime = false
-                },
-                out var validatedToken
-            );
-
-            var tokenIp = principal.FindFirst("ip")?.Value;
-            var requestIp = HttpContext.Connection.RemoteIpAddress?.ToString();
-
-            if (tokenIp != requestIp)
+            //the below may be vulnerable to a timing attack, might want to set it to a fixed time
+            var tokenInDb = _context.RefreshTokens.FirstOrDefault(x => x.TokenHash == refreshToken);
+            //if no token return error
+            if (tokenInDb == null || tokenInDb.IsRevoked) return Unauthorized("User not found. Continuing with tempUser");
+            
+            if (tokenInDb.UserId == null)
             {
-                return Unauthorized("IP mismatch");
+                //delete token
+                return Unauthorized("User not found. Continuing with tempUser");
             }
 
-            var newAccessToken = _tokenProvider.CreateAccessToken(principal, tokenIp);
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == tokenInDb.UserId);
 
-            //maybe using ClaimTypes.NameIdentifier is causing issues
-            var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (userId == null)
-            {
-                return Unauthorized("Missing subject claim.");
-            }
-
-            var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                return Unauthorized("User not found.");
+                //delete token
+                return Unauthorized("User not found. Continuing with tempUser");
             }
+            
+            var newAccessToken = _tokenProvider.CreateTokenUsingUser(user);
+            var newRefreshToken = new RefreshToken{
+                Id = Guid.NewGuid().ToString(),
+                UserId = user.Id,
+                TokenHash = _hasher.Hash(_tokenProvider.GenerateRandomToken()),
+                ExpiryDate = DateTime.UtcNow.AddDays(20),
+                ApplicationUser = user,
+                Created = DateTime.UtcNow,
+                IsRevoked = false
+            };
 
-            //maybe only do this if token is expired
-            HttpContext.Response.Cookies.Append("access_token", newAccessToken, new CookieOptions
+            tokenInDb.IsRevoked = true;
+            await _context.RefreshTokens.AddAsync(newRefreshToken);
+            await _context.SaveChangesAsync();
+
+            Response.Cookies.Append("access_token", newAccessToken, new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.None,
+                // SameSite = SameSiteMode.None,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddMinutes(5)
             });
 
-            Console.WriteLine("User");
-            Console.WriteLine(user);
+            Response.Cookies.Append("refresh_token", newRefreshToken.TokenHash, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                // SameSite = SameSiteMode.None,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddDays(20)
+            });
 
-            var learnedMovesResponse = await _context.LearnedMoves.Where(lm => lm.UserId == user.Id).ToListAsync();
-            List<LearnedMove> learnedMoves = new();
-            learnedMoves.AddRange(learnedMovesResponse);
+            var learnedMoveDtos = await _context.LearnedMoves.Where(lm => lm.UserId == user.Id).Select(lm => new LearnedMoveDto
+                {
+                    Id = lm.Id,
+                    MoveId = lm.MoveId,
+                    UserId = lm.UserId,
+                    MartialArtId = lm.MartialArtId,
+                    EaseFactor = lm.EaseFactor,
+                    NextReviewDate = lm.NextReviewDate
+                }).ToListAsync();
 
             return Ok(new
             {
@@ -196,13 +400,13 @@ namespace MAE_WebAPI.Controllers{
                     user.Id,
                     user.Email,
                     user.UserName,
-                    LearnedMoves = learnedMoves,
-                    Reviews = ShuffleReviews(learnedMoves.Where(lm => lm.NextReviewDate < DateTime.Now).ToList())
+                    LearnedMoves = learnedMoveDtos,
+                    Reviews = _mAEControllerFunctionProvider.ShuffleReviews(learnedMoveDtos.Where(lm => lm.NextReviewDate < DateTime.Now).ToList())
                 }
             });
         }
 
-
+        //figure out how to make authorized work, it's not happy with the current setup
         [Authorize]
         [HttpPost("add-learned-move")]
         public async Task<IActionResult> AddLearnedMove([FromBody] MoveDto moveDto)
@@ -214,6 +418,7 @@ namespace MAE_WebAPI.Controllers{
                     return BadRequest(ModelState);
                 }
 
+                //reconfigure auth here. Can we make a modular method to apply to each authorized endpoint?
                 var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
                     ?? User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
 
@@ -257,10 +462,10 @@ namespace MAE_WebAPI.Controllers{
 
         [Authorize]
         [HttpPost("update-learned-moves")]
-        public async Task<IActionResult> UpdateLearnedMoves([FromBody] List<LearnedMoveDto> learnedMovesDto)
+        public async Task<IActionResult> UpdateLearnedMoves([FromBody] List<UpdateLearnedMoveDto> learnedMovesDto)
         {
             List<LearnedMove> learnedMovesToUpdate = new();
-            //validate dto
+            //ensure the auth for this works with refresh tokens, same for add-learned-moves
 
             if (!HttpContext.User.Identity.IsAuthenticated)
                 return BadRequest("User unauthorized");
@@ -277,16 +482,16 @@ namespace MAE_WebAPI.Controllers{
                 return BadRequest("User not found");
 
             List<LearnedMove> scaffoldedDtosToLearnedMoves = new();
-            foreach (LearnedMoveDto learnedMoveDto in learnedMovesDto)
+            foreach (UpdateLearnedMoveDto learnedMoveDto in learnedMovesDto)
             {
-                LearnedMove scaffoldedDtoToLearnedMove = _context.LearnedMoves.Where(m => m.MoveId == learnedMoveDto.MoveId).FirstOrDefault();
+                LearnedMove scaffoldedDtoToLearnedMove = await _context.LearnedMoves.Where(m => m.MoveId == learnedMoveDto.MoveId).FirstOrDefaultAsync();
                 if (scaffoldedDtoToLearnedMove != null) scaffoldedDtosToLearnedMoves.Add(scaffoldedDtoToLearnedMove);
             }
             //will need to scaffold movesDataDtos into an array of LearnedMoves from the dbcontext
             //calculate score and put in below method
             foreach (var learnedMove in scaffoldedDtosToLearnedMoves)
             {
-                LearnedMoveDto correspondingLearnedMoveDto = learnedMovesDto.Where(lmdto => lmdto.MoveId == learnedMove.MoveId).FirstOrDefault();
+                UpdateLearnedMoveDto correspondingLearnedMoveDto = learnedMovesDto.Where(lmdto => lmdto.MoveId == learnedMove.MoveId).FirstOrDefault();
                 double numberOfCorrectSteps = 0;
                 foreach (StepDto stepDto in correspondingLearnedMoveDto.Steps) {
                     if (stepDto.IsCorrect) numberOfCorrectSteps++;
@@ -300,92 +505,6 @@ namespace MAE_WebAPI.Controllers{
             await _context.SaveChangesAsync();
 
             return Ok(200);
-        }
-
-        [AllowAnonymous]
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
-        {
-            //perform validation on DTO
-            IActionResult response = Unauthorized();
-            var user = await _userManager.FindByEmailAsync(request.Email);
-            _signInManager.AuthenticationScheme = IdentityConstants.BearerScheme;
-            Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, lockoutOnFailure: false);
-            if (!result.Succeeded)
-            {
-                return response;
-            }
-
-            var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
-
-            var accessToken = _tokenProvider.CreateAccessToken(user, ipAddress);
-
-            Response.Cookies.Append("access_token", accessToken, new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true, // True when in production
-                SameSite = SameSiteMode.None,
-            });
-
-            var thing = await _context.LearnedMoves.ToListAsync();
-
-            var learnedMovesResponse = await _context.LearnedMoves.Where(lm => lm.UserId == user.Id && lm.NextReviewDate < DateTime.UtcNow).ToListAsync();
-            List<LearnedMove> learnedMoves = new();
-            learnedMoves.AddRange(learnedMovesResponse);
-
-            return Ok(new
-            {
-                user = new
-                {
-                    user.Id,
-                    user.Email,
-                    user.UserName,
-                    LearnedMoves = learnedMoves,
-                    Reviews = ShuffleReviews(learnedMoves.Where(lm => lm.NextReviewDate < DateTime.Now).ToList())
-                }
-            });
-        }
-
-        [HttpPost("logout")]
-        public async Task<IActionResult> Logout()
-        {
-            Console.WriteLine(User);
-
-            //only useful when using Identity's tokens
-            //await _signInManager.SignOutAsync();
-
-            Response.Cookies.Delete("access_token", new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.None,
-            });
-
-            return Ok();
-        }
-
-
-        private static List<LearnedMove> ShuffleReviews(List<LearnedMove> reviews)
-        {
-            List<LearnedMove> shuffledReviews = new();
-
-            List<int> numbersAssigned = [];
-
-            Random random = new();
-            for (int i = 0; i < reviews.Count; i++)
-            {
-                while (true)
-                {
-                    int randomNumber = random.Next(0, reviews.Count);
-                    if (!numbersAssigned.Contains(randomNumber))
-                    {
-                        shuffledReviews.Add(reviews[i]);
-                        numbersAssigned.Add(randomNumber);
-                        break;
-                    }
-                }
-            }
-            return shuffledReviews;
         }
     }
 

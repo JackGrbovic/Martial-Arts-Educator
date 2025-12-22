@@ -1,3 +1,10 @@
+export type User = {
+    id: string;
+    name: string;
+    learnedMoves: LearnedMove[];
+    reviews: []
+  };
+
 export type MartialArt = {
   id: string,
   name: string,
@@ -19,6 +26,17 @@ export type Move = {
 export type LessonMove = Omit<Move, 'steps'> & {
   steps : LessonStep[]
 }
+
+export type LearnedMove = {
+  id : string,
+  moveId : string,
+  userId : string,
+  martialArtId : string
+  easeFactor : number
+  nextReviewDate : Date,
+}
+
+export type TempUserLearnedMove = Omit<LearnedMove, "easeFactor" | "nextReviewDate">
 
 export type TestMove = Omit<Move, 'learningOrderNumber' | 'url'> & {
   steps : TestStep[],
