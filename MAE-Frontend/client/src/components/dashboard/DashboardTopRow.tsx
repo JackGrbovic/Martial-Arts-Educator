@@ -60,9 +60,12 @@ export default function DashboardTopRow({nextReviewDateTime, selectedMartialArtL
 
         if(logout){
             handleLogout();
-            navigate('/login')
+            navigate('/')
+            window.location.reload();
         }
     }, [logout])
+
+    console.log("nextReviewDateTime", nextReviewDateTime)
 
     return(
         <div className='space-between-row-container button-height flex-wrap'>
@@ -78,19 +81,18 @@ export default function DashboardTopRow({nextReviewDateTime, selectedMartialArtL
                             </p>
                         </div>
                     </div>
-                    <div className={`${selectedMartialArtReviews?.length ? 'clickable' : ''} hollow-container color-1`} style={{display: 'inline-block', padding: '2px'}}>
                         {nextReviewDateTime ? (
-                            <>
+                            <div className={`${selectedMartialArtReviews?.length ? 'clickable' : ''} hollow-container color-1`} style={{display: 'inline-block', padding: '2px'}}>
                                 <p className={'next-review-label-component label color-1'} onClick={isTempUser ? redirectToRegister : handleSetBeginReviews}>
                                     Next Review Date
                                 </p>
                                 <p className={'next-review-date-component label color-1'} onClick={isTempUser ? redirectToRegister : handleSetBeginReviews}>
                                     {nextReviewDateTime}
                                 </p>
-                            </>
+                            </div>
                             
                         ) : (
-                                <>
+                                <div className={`${selectedMartialArtReviews?.length ? 'clickable' : ''} hollow-container color-1`}>
                                     <p className={`${selectedMartialArtReviews?.length ? 'clickable-text' : ''} label color-1`} onClick={isTempUser ? redirectToRegister : handleSetBeginReviews}>
                                         Reviews
                                     </p>
@@ -99,12 +101,11 @@ export default function DashboardTopRow({nextReviewDateTime, selectedMartialArtL
                                             {reviews?.length ?? 0}
                                         </p>
                                     </div>
-                                </>
+                                </div>
                                 
                             )
                         }
                         
-                    </div>
                 </>
             }
             <div className='chevron-button-container button-height dbtr-container'>

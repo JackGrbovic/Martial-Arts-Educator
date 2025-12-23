@@ -40,25 +40,6 @@ namespace MAE_WebAPI.Controllers{
             _resendKey = options.Value.ApiKey;
         }
 
-        [AllowAnonymous]
-        [HttpGet("baseUrlTest")]
-        public async Task<IActionResult> BaseUrlTest()
-        {
-            string newUrl = $"{Request.Scheme}://{Request.Host}/{Request.PathBase}";
-
-            IResend resend = ResendClient.Create( "re_gUzipPcY_57KiwQyqDFiMwhkrfuqvj5vh" );
-            
-            var resp = await resend.EmailSendAsync( new EmailMessage()
-            {
-                From = "services@maeapp.net",
-                To = "jackgrbovic@googlemail.com",
-                Subject = "Magic Link",
-                HtmlBody = $"<p>Thank you for registering. Please use <a href=\"{newUrl}\">this link</a> to log in.</p>",
-            } );
-
-            return Ok(resp);
-        }
-
 
         [AllowAnonymous]
         [HttpPost("register")]
@@ -109,7 +90,7 @@ namespace MAE_WebAPI.Controllers{
             catch (Exception ex)
             {
                 Console.WriteLine("ERROR: " + ex.Message);
-                return StatusCode(500, new { error = ex.Message });
+                return BadRequest("Unable to register user.");
             }
         }
 

@@ -110,6 +110,7 @@ export default function Lesson(){
                     <div className='full-width flex'>
                         <p onClick={(e)=> {
                             navigate('/');
+                            window.location.reload();
                         }} className="color-1 secondary-font back-to-dashboard-text">
                             ← Dashboard 
                         </p>

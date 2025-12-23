@@ -45,7 +45,6 @@ import { useLocation } from "react-router-dom";
 
 
     const fetchUserOnRefresh = async () => {
-        
       try{
         const response = await api.post("/refresh", { withCredentials : true });
         
@@ -217,6 +216,7 @@ import { useLocation } from "react-router-dom";
     const logout = () => {
       setUser(null);
       navigate('/');
+      window.location.reload();
     };
 
     return (

@@ -15,7 +15,6 @@ namespace MAE_WebAPI.Controllers.MAEControllerFunctions
     public class MAEControllerFunctionProvider
     {
         private readonly MAEDbContext _context;
-        //below needs to be env variable
         private static string _resendKey;
         IResend resend = ResendClient.Create(_resendKey);
         public MAEControllerFunctionProvider(MAEDbContext mAEDbContext, IOptions<ResendOptions> options)
@@ -89,15 +88,13 @@ namespace MAE_WebAPI.Controllers.MAEControllerFunctions
             };
 
             await _context.MagicLinkTokens.AddAsync(magicLinkToken);
-            //below line throwing exception
             await _context.SaveChangesAsync();
 
             string loginLinkSegment = "login-with-link";
             string registrationLinkSegment = "complete-registration";
             
-            //http://localhost:5240/api/MAE/login?tokenHash=eyJ
-            string loginUrl = isLogin? $"{Request.Scheme}://{Request.Host}/{Request.PathBase}/{loginLinkSegment}?tokenHash={magicLinkTokenHash}" :
-                $"{Request.Scheme}://{Request.Host}/{Request.PathBase}/{registrationLinkSegment}?tokenHash={magicLinkTokenHash}";
+            string loginUrl = isLogin? $"{Request.Scheme}://maeapp.net/{Request.PathBase}/{loginLinkSegment}?tokenHash={magicLinkTokenHash}" :
+                $"{Request.Scheme}://maeapp.net/{Request.PathBase}/{registrationLinkSegment}?tokenHash={magicLinkTokenHash}";
 
             
 

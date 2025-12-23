@@ -41,7 +41,7 @@ export default function Dashboard(){
             return new Date(lm.nextReviewDate).getTime();
         })
 
-        if (reviews.length == 0){
+        if (reviews?.length == 0){
             const learnedMovesOrderedByLowestDateTime = learnedMoveDateTimes.sort((a, b) => a < b);
             const nextReviewDateTime = new Date(learnedMovesOrderedByLowestDateTime[0]);
             const nextReviewDateTimeLocalString = nextReviewDateTime.toLocaleString('en-GB', {
