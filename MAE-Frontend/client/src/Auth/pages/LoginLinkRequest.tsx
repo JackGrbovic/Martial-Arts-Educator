@@ -36,7 +36,7 @@ export default function LoginLinkRequest(){
                 setSuccessText('Link sent to inbox. Please click to log in.')
             }
           } catch (error) {
-            setErrorMessage(JSON.stringify(error));
+            setErrorMessage("Link unable to send. Please contact the system administrator.");
           }
     }
 

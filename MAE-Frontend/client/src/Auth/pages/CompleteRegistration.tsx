@@ -34,7 +34,7 @@ export default function CompleteRegistration(){
                     window.location.reload();
                 }
             } catch (error) {
-                setErrorMessage(JSON.stringify(error));
+                setErrorMessage("Unable to complete registration. Please try again or contact the system administrator.");
                 setIsLoading(false);
             }
         }

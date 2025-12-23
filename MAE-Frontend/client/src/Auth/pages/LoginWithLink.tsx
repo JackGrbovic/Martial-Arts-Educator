@@ -31,7 +31,7 @@ export default function LoginWithLink(){
                     window.location.reload();
                 }
             } catch (error) {
-                setErrorMessage(JSON.stringify(error));
+                setErrorMessage("Unable to log in. Please try again or contact the system administrator.");
                 setIsLoading(false);
             }
         }

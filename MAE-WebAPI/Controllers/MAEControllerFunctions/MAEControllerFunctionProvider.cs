@@ -93,8 +93,8 @@ namespace MAE_WebAPI.Controllers.MAEControllerFunctions
             string loginLinkSegment = "login-with-link";
             string registrationLinkSegment = "complete-registration";
             
-            string loginUrl = isLogin? $"{Request.Scheme}://maeapp.net/{Request.PathBase}/{loginLinkSegment}?tokenHash={magicLinkTokenHash}" :
-                $"{Request.Scheme}://maeapp.net/{Request.PathBase}/{registrationLinkSegment}?tokenHash={magicLinkTokenHash}";
+            string loginUrl = isLogin? $"{Request.Scheme}://maeapp.net/{loginLinkSegment}?tokenHash={magicLinkTokenHash}" :
+                $"{Request.Scheme}://maeapp.net/{registrationLinkSegment}?tokenHash={magicLinkTokenHash}";
 
             
 
