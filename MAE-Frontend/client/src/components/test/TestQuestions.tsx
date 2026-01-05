@@ -22,7 +22,7 @@ export default function TestQuestions({currentStep, HandleAnswerQuestion, Determ
             {currentStep.stepOptions.map((stepOption, index : number) => (
                 <div>
                     {currentStep.answered && currentStep.stepOptions[index].selected ? (
-                        <div className="space-between-row-container  larger-button-height" style={{marginTop: '20px',}}>
+                        <div className="space-between-row-container larger-button-height test-option-margin-top">
                                 <div className="answer-wrapper" style={{width: `${isFinalQuestion ? '100%' : '80%'}`}}>
                                     <div className={`answer-container left-only-radius ${DetermineOptionColor(stepOption)}`} style={{width: '100%'}}>
                                         <p className='answer-text color-1' style={{height: '100%'}}>
@@ -40,7 +40,7 @@ export default function TestQuestions({currentStep, HandleAnswerQuestion, Determ
                             }
                         </div>
                         ) : (
-                        <button key={index} onClick={() => {HandleAnswerQuestion(index)}} className='remove-button-style larger-button-height' style={{marginTop: '20px', width: '100%'}}>
+                        <button key={index} onClick={() => {HandleAnswerQuestion(index)}} className='remove-button-style larger-button-height test-option-margin-top clickable' style={{width: '100%'}}>
                             <div className={`answer-wrapper`}>
                                 <div className={`answer-container color-1`} style={{width: '100%'}}>
                                     <p className='answer-text color-1' style={{height: '100%'}}>

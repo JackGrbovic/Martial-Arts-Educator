@@ -65,33 +65,29 @@ function RandomiseStepOptions(stepOptions){
 }
 
 export default function ScaffoldStepOptionsUsingStepData(stepOptions, stepsData){
-    try{
-        let newStepOptions = [];
-        const presentStepOptionsById = [];
-        for (let step of stepsData){
-            for (let stepOption of stepOptions){
-                if (step.id === stepOption.targetParentStepId) presentStepOptionsById.push(stepOption);
-            }
+    let newStepOptions = [];
+    const presentStepOptionsById = [];
+    for (let step of stepsData){
+        for (let stepOption of stepOptions){
+            if (step.id === stepOption.targetParentStepId) presentStepOptionsById.push(stepOption);
         }
-
-        for (let stepOption of presentStepOptionsById){
-            for (let stepWithData of stepsData){
-                if (stepWithData.id === stepOption.idOfStepUsedForData) {
-                    const stepOptionToReturn = {
-                        id: stepOption.id,
-                        targetParentStepId: stepOption.targetParentStepId,
-                        isRealStep: stepOption.isRealStep,
-                        name: stepWithData.name,
-                        shortDescription: stepWithData.shortDescription,
-                        fullDescription: stepWithData.fullDescription
-                    }
-                    stepOptionToReturn && newStepOptions.push(stepOptionToReturn)
-                }
-            }
-        }
-            
-        return newStepOptions;
-    } catch (ex){
-        console.error('thing not work ', ex);
     }
+
+    for (let stepOption of presentStepOptionsById){
+        for (let stepWithData of stepsData){
+            if (stepWithData.id === stepOption.idOfStepUsedForData) {
+                const stepOptionToReturn = {
+                    id: stepOption.id,
+                    targetParentStepId: stepOption.targetParentStepId,
+                    isRealStep: stepOption.isRealStep,
+                    name: stepWithData.name,
+                    shortDescription: stepWithData.shortDescription,
+                    fullDescription: stepWithData.fullDescription
+                }
+                stepOptionToReturn && newStepOptions.push(stepOptionToReturn)
+            }
+        }
+    }
+        
+    return newStepOptions;
 }

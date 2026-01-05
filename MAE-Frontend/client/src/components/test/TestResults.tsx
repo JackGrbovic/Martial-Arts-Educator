@@ -14,17 +14,12 @@ export default function TestResults({correctCounter, totalCounter, incorrectAnsw
     const navigate = useNavigate();
 
     return(
-        <div className="full-width-and-height" style={{alignItems: 'center', justifyItems: 'center'}}>
+        <div className="full-width-and-height flex-wrap flex" style={{alignItems: 'center', justifyItems: 'center'}}>
             
-           <div className="align-center" style={{width: '300px', marginTop: '20px'}}>
-                <div className="space-between-row-container large-button-height">
-                    <div className="button color-2 background-color-1">
-                        <p className="answer-text">You scored:</p>
-                    </div>
-                    <div className="hollow-container color-1">
-                        <p className="answer-text">
-                            {correctCounter} / {totalCounter}
-                        </p>
+           <div className="full-width" style={{marginTop: '10px'}}>
+                <div className="">
+                    <div className="button border-solid border-color-1" style={{height: '35px'}}>
+                        <p className="answer-text color-10 text-align-center">You scored: {correctCounter} / {totalCounter}</p>
                     </div>
                 </div>
             </div> 
@@ -33,7 +28,8 @@ export default function TestResults({correctCounter, totalCounter, incorrectAnsw
 
             {
                 incorrectAnswerPairsObject && 
-                <div className="hollow-container scrollable-answer-container color-1" style={{width: '80%', marginTop: '20px', flexWrap: 'wrap'}}>
+                <div className="hollow-container scrollable-answer-container color-1" style={{width: '100%', marginTop: '15px', flexWrap: 'wrap'}}>
+                    <p className="hollow-container solid-border border-color-1 no-margin" style={{height: '30px'}}>Incorrect Answers:</p>
                     {
                         incorrectAnswerPairsObject.movesWithPackagedIncorrectSteps.map((move, key) => {
                             return <WrongAnswersFromStepOptions pairedAnswers = {move.pairedAnswers} DetermineOptionColorForResults = {DetermineOptionColorForResults} />
@@ -54,7 +50,7 @@ interface WrongAnswersFromStepOptionsProps {
 
 function WrongAnswersFromStepOptions({pairedAnswers, DetermineOptionColorForResults} : WrongAnswersFromStepOptionsProps){
     return pairedAnswers.map((answerPair, index) => (answerPair &&
-        <button key={index} className='remove-button-style space-between-row-container full-width-and-height' style={{marginTop: index === 0 ? '10px' : '30px', flexWrap: 'wrap'}}>
+        <div key={index} className='remove-button-style space-between-row-container' style={{marginTop: index === 0 ? '10px' : '30px', flexWrap: 'wrap'}}>
             <p className="medium-title">{answerPair.moveName}: Step {answerPair.stepNumber}</p>
             <div className={`answer-container larger-button-height flex-grow-1 color-1 ${DetermineOptionColorForResults(answerPair.incorrect)}`} style={{width: '100%'}}>
                 <p className='answer-text color-1' style={{fontSize: '15px'}}>
@@ -72,6 +68,6 @@ function WrongAnswersFromStepOptions({pairedAnswers, DetermineOptionColorForResu
                     {answerPair.correct.shortDescription ?? answerPair.correct.fullDescription}
                 </p>
             </div>
-        </button>
+        </div>
     ))
 }

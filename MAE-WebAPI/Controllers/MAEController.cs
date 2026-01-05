@@ -165,8 +165,8 @@ namespace MAE_WebAPI.Controllers{
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.None,
-                //SameSite = SameSiteMode.Strict,
+                // SameSite = SameSiteMode.None,
+                SameSite = SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddMinutes(5)
             });
 
@@ -174,8 +174,8 @@ namespace MAE_WebAPI.Controllers{
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.None,
-                //SameSite = SameSiteMode.Strict,
+                // SameSite = SameSiteMode.None,
+                SameSite = SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddDays(20)
             });
 
@@ -232,8 +232,8 @@ namespace MAE_WebAPI.Controllers{
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.None,
-                //SameSite = SameSiteMode.Strict,
+                // SameSite = SameSiteMode.None,
+                SameSite = SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddMinutes(5)
             });
 
@@ -241,8 +241,8 @@ namespace MAE_WebAPI.Controllers{
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.None,
-                //SameSite = SameSiteMode.Strict,
+                // SameSite = SameSiteMode.None,
+                SameSite = SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddDays(20)
             });
 
@@ -256,8 +256,16 @@ namespace MAE_WebAPI.Controllers{
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.None,
-                //SameSite = SameSiteMode.Strict,
+                // SameSite = SameSiteMode.None,
+                SameSite = SameSiteMode.Strict,
+            });
+
+            Response.Cookies.Delete("refresh_token", new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                // SameSite = SameSiteMode.None,
+                SameSite = SameSiteMode.Strict,
             });
 
             return Ok();
@@ -350,8 +358,8 @@ namespace MAE_WebAPI.Controllers{
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.None,
-                //SameSite = SameSiteMode.Strict,
+                // SameSite = SameSiteMode.None,
+                SameSite = SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddMinutes(5)
             });
 
@@ -359,8 +367,8 @@ namespace MAE_WebAPI.Controllers{
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.None,
-                //SameSite = SameSiteMode.Strict,
+                // SameSite = SameSiteMode.None,
+                SameSite = SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddDays(20)
             });
 
@@ -468,8 +476,7 @@ namespace MAE_WebAPI.Controllers{
                 LearnedMove scaffoldedDtoToLearnedMove = await _context.LearnedMoves.Where(m => m.MoveId == learnedMoveDto.MoveId).FirstOrDefaultAsync();
                 if (scaffoldedDtoToLearnedMove != null) scaffoldedDtosToLearnedMoves.Add(scaffoldedDtoToLearnedMove);
             }
-            //will need to scaffold movesDataDtos into an array of LearnedMoves from the dbcontext
-            //calculate score and put in below method
+
             foreach (var learnedMove in scaffoldedDtosToLearnedMoves)
             {
                 UpdateLearnedMoveDto correspondingLearnedMoveDto = learnedMovesDto.Where(lmdto => lmdto.MoveId == learnedMove.MoveId).FirstOrDefault();

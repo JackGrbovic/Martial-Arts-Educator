@@ -43,6 +43,8 @@ export default function CompleteRegistration(){
     }, [tokenHash, user])
 
     return(
-        <p>{errorMessage ? errorMessage : 'Processing...'}</p>
+        <div className="background-color-2 hollow-container">
+            <p>{errorMessage ? errorMessage : 'Processing...'}</p>
+        </div>
     )
 }

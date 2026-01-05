@@ -6,7 +6,7 @@ import { useAppContext } from "../../../AppContext.tsx";
 import LearnedSoFarPanel from "./DashboardMainSectionRightSide/LearnedSoFarPanel.tsx";
 import { useNavigate } from "react-router-dom";
 import UserGuide from "../../general/UserGuide.jsx";
-import { LogoImage } from "../../../assets/images/ImageExports.js";
+import { LogoImage, MAEDesktopBottomLogo, MAEDesktopTopLogo } from "../../../assets/images/ImageExports.js";
 
 export default function DashboardMainSection({selectedMartialArtLessons, selectedMartialArt, selectedMartialArtLearnedMoves, handleSetBeginReviews, reviews}){
     const [backgroundImage, setBackgroundImage] = useState()
@@ -56,64 +56,49 @@ export default function DashboardMainSection({selectedMartialArtLessons, selecte
     }
 
     return (
-        <div className={`dashboard-main-section-container color-1 ${!isMobile ? 'height-400' : 'mobile-background-container-height'} full-width`} style={{marginTop: isMobile ? '10px' : '20px'}}>
-            <div className={`background-image-container ${isMobile ? 'flex-wrap flex' : ''}`} style={{backgroundImage: `url(${backgroundImage})`, padding: isMobile ? 'none' : '', justifyContent: isMobile ? 'center' : ''}}>
-                {isMobile && !infoPanelDisplayed &&
-                    <img src={LogoImage} style={{width: '90%', alignSelf: 'center', justifySelf: 'center'}} />
-                }
-                
-                
+        <div className={`dashboard-main-section-container color-9 ${!isMobile ? 'height-400' : 'mobile-background-container-height'} full-width`} style={{marginTop: isMobile ? '10px' : '20px'}}>
+            <div className={`background-image-container ${isMobile ? 'flex-wrap flex' : ''}`} style={{/*backgroundImage: `url(${backgroundImage})`,*/ padding: isMobile ? 'none' : '', justifyContent: isMobile ? 'center' : ''}}>
                 {!isMobile &&
                     <>
                         <div className={`${!isMobile ? 'left-side-inner-background-image-container' : ''}`}>
-                            <img src={`${LogoImage}`} style={{maxHeight: '150px', marginTop: '5px'}} />
-
-                            
-
-                            {/* <div className='button-height'>
-                                <div className='button background-color-1'>
-                                    <p className='label color-3'>Learned</p>
-                                    <div className='button-within-button background-color-3'>
-                                        <p className='small-label color-1'>
-                                            {selectedMartialArtLearnedMoves?.length ?? 0}
-                                        </p>
-                                    </div>
-                                </div>
+                            <div className="logo-image-container-top border-color-9">
+                                <p className="logo-title">Martial Arts Educator</p>
                             </div>
-                            
-                            <div className='button-height'>
-                                <div className='button background-color-3'>
-                                    <p className='label link color-1'>To learn</p>
-                                    <div className='button-within-button background-color-1'>
-                                        <p className='small-label color-3'>
-                                            {selectedMartialArtLessons?.length ?? 0}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div> */}
+                            <div className="logo-image-container-bottom border-color-9">
+                                <img src={`${MAEDesktopBottomLogo}`} style={{maxHeight: '90%', marginTop: '5px', maxWidth: '100%'}} />
+                            </div>
+                            <span style={{marginBottom: '10px'}}></span>
                             <UserGuide showUserGuide={showUserGuide} showLearnedMoves={showLearnedMoves} handleDisplayInfoPanel={handleDisplayInfoPanel}/>
                         </div>
                         <div className={`flex ${!isMobile ? 'right-side-inner-background-image-container' : 'full-width'}`} style={{justifyContent: isMobile ? 'center' : '', width: isMobile ? '50%' : ''}}>
-                            {/* <div className='hollow-container color-3 height-auto'>
-                                <p className='large-title color-3'>{selectedMartialArt.name}</p>
-                            </div> */}
                             <LearnedSoFarPanel countToDisplay={4} selectedMartialArtLearnedMoves={selectedMartialArtLearnedMoves} showLearnedMoves={showLearnedMoves} showUserGuide={showUserGuide} handleDisplayInfoPanel={handleDisplayInfoPanel} selectedMartialArt={selectedMartialArt}/>
                         </div>
                     </>
                 }
                 
+                {isMobile && !infoPanelDisplayed &&
+                    <>
+                        <div className="logo-image-container-top border-color-9">
+                            <p className="logo-title">Martial Arts Educator</p>
+                        </div>
+                        <div className="logo-image-container-bottom border-color-9">
+                            <img src={`${MAEDesktopBottomLogo}`} style={{maxHeight: '90%', margin: '20px 0 20px 0', maxWidth: '100%'}} />
+                        </div>
+                    </>
+                }
+
                 {isMobile && 
                     <>
                         {isMobile && !showLearnedMoves && !showUserGuide &&
-                            <div className="flex" style={{width: '100%', justifyContent: 'space-around', marginBottom: '30px'}}>
-                                <div className={`hollow-container flex border-color-6 clickable`} onClick={() => {handleDisplayInfoPanel('lsf')}} style={{width: '40%', justifyContent: 'center', marginLeft: '10px', padding: '0'}}>
-                                    <p className='secondary-font color-6' style={{fontSize: '20px', textDecoration: 'underline'}}>Learned so far&nbsp;
+                            <div className="flex mobile-uglm-container" style={{width: '100%', justifyContent: 'space-between'}}>
+                                <div className={`hollow-container flex border-color-6 clickable`} onClick={() => {handleDisplayInfoPanel('lsf')}} style={{width: '49%', justifyContent: 'center', padding: '0'}}>
+                                    <p className='primary-font color-6' style={{fontSize: '18px', textDecoration: 'underline'}}>Learned so far&nbsp;
                                         {isMobile && !showLearnedMoves && (<span>↑</span>)}
                                     </p>
                                 </div>
                                 
-                                <div className={`hollow-container flex border-color-6 clickable`} onClick={() => {handleDisplayInfoPanel('ug')}} style={{width: '40%', justifyContent: 'center', marginRight: '10px', padding: '0'}}>
-                                    <p className='secondary-font color-6' style={{fontSize: '20px', textDecoration: 'underline'}}>User Guide&nbsp;
+                                <div className={`hollow-container flex border-color-6 clickable`} onClick={() => {handleDisplayInfoPanel('ug')}} style={{width: '49%', justifyContent: 'center', padding: '0'}}>
+                                    <p className='primary-font color-6' style={{fontSize: '18px', textDecoration: 'underline'}}>User Guide&nbsp;
                                         {isMobile && !showUserGuide && (<span >↑</span>)}
                                     </p>
                                 </div>

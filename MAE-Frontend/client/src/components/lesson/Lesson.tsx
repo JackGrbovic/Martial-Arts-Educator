@@ -106,20 +106,26 @@ export default function Lesson(){
     return(
         <div className='full-width-and-height'>
             {!testData ? (
-                <div className='lesson-container' id="iframeParent">
-                    <div className='full-width flex'>
-                        <p onClick={(e)=> {
-                            navigate('/');
-                            window.location.reload();
-                        }} className="color-1 secondary-font back-to-dashboard-text">
-                            ← Dashboard 
-                        </p>
+                <div className='lesson-container dashboard-container-width dashboard-container-height' id="iframeParent">
+                    <div className='full-width flex' style={{flexWrap: 'wrap'}}>
+                        <div className='hollow-container border-color-1 clickable' style={{height: '30px', marginRight: '10px', marginBottom: '5px'}}>
+                            <p onClick={(e)=> {
+                                navigate('/');
+                                window.location.reload();
+                            }} className="color-10 primary-font back-to-dashboard-text">
+                                ← Dashboard 
+                            </p>
+                        </div>
+                        <div className='hollow-container border-color-1 clickable' style={{height: '30px'}}>
+                            <p className='medium-title color-10 lesson-move-name'>{currentMove && currentMove.name}: {currentStep?.name }</p>
+                        </div>
                     </div>
                     
-                    <p className='medium-title color-1 lesson-move-name'>{currentMove && currentMove.name}: {currentStep?.name }</p>
                     {steps && currentStep && (
                         <>
-                            <LessonVideo videoHeight={videoHeight} url={currentMove && currentMove.url} startTime={currentStep?.videoClipStartTime} endTime={currentStep?.videoClipEndTime} />
+                            <div className='iframe-wrapper'>
+                                <LessonVideo videoHeight={videoHeight} url={currentMove && currentMove.url} startTime={currentStep?.videoClipStartTime} endTime={currentStep?.videoClipEndTime} />
+                            </div>
                             <LessonBottomRow rearrangeBottomRow={rearrangeBottomRow} currentStep={currentStep} handleSetCurrentStep={handleSetCurrentStep} steps={steps && steps} setSetupTestFlag={setSetupTestFlag}/>
                         </>
                     )}

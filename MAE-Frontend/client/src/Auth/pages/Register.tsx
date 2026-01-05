@@ -43,12 +43,20 @@ export default function Register(){
     }
 
     return(
-        <>
+        <div className="background-color-2 hollow-container" style={{flexWrap: 'wrap', width: '290px'}}>
+            <div className='hollow-container border-color-1 clickable' style={{height: '20px', marginBottom: '10px'}}>
+                <p onClick={(e)=> {
+                    navigate('/');
+                }} className="color-10 primary-font back-to-dashboard-text" style={{fontSize: '12px'}}>
+                    ← Dashboard 
+                </p>
+            </div>
+            
             {!errorMessage && !successText &&
                 <form onSubmit={handleSubmit(onSubmit)} style={{display: 'flex', flexDirection: 'column'}}>
                     {errorMessage && <p className="error-message">{errorMessage}</p>}
                     {errors.root && <div className="error-message">{errors.root.message}</div>}
-                    <label className={'color-3 primary-font'} style={{marginBottom: '10px'}}>Email Address:
+                    <label className={'color-10 primary-font'} style={{marginBottom: '10px'}}>Email Address:
                         <input 
                             type="email" 
                             {...register('email')}
@@ -56,7 +64,7 @@ export default function Register(){
                         />
                         {errors.email && <div className="error-message">{errors.email.message}</div>}
                     </label>
-                    <label className={'color-3 primary-font'} style={{marginBottom: '10px'}}>Username:
+                    <label className={'color-10 primary-font'} style={{marginBottom: '10px'}}>Username:
                         <input 
                             type="text" 
                             {...register('userName')}
@@ -66,7 +74,7 @@ export default function Register(){
                     </label>
                     <div style={{display: 'flex', width: '100%', justifyContent: 'space-between'}}>
                     <div className="remove-button-style button" onClick={() => {!isSubmitting && navigate('/login-link-request')}}>
-                            <span className={'primary-font color-6'}>{isSubmitting ? "Loading..." : "Log In"}</span>
+                            <span className={'primary-font color-10'}>{isSubmitting ? "Loading..." : "Log In"}</span>
                         </div>
                         <button disabled={isSubmitting} type="submit" className="button">
                             <span className={'primary-font'}>{isSubmitting ? "Loading..." : "Register"}</span>
@@ -76,6 +84,6 @@ export default function Register(){
             }
             {errorMessage && <p className={'primary-font'}>{errorMessage}</p>}
             {successText && <p className={'primary-font'}>{successText}</p>}
-        </>
+        </div>
     )
 }

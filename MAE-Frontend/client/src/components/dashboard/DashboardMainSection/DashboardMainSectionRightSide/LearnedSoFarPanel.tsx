@@ -104,13 +104,23 @@ export default function LearnedSoFarPanel({selectedMartialArtLessons, selectedMa
 
     function LearnedSoFarInfoPanel(){
         return(
-            <div className={`hollow-container color-3 info-panel`} style={{height: 'auto', width: isMobile && '250px'}}>
+            <div className={`hollow-container color-1 info-panel faded-background`} style={{height: 'auto', width: isMobile && '270px'}}>
+                    {!isMobile &&
+                        <p className='no-margin text-align-center color-10 learned-so-far-font-size primary-font bold clickable' style={{marginBottom: '20px'}}>
+                            Learned so far
+                        </p>
+                    }
+                    {isMobile &&
+                        <p className='only-margin-top text-align-center color-3 learned-so-far-font-size primary-font clickable'>Learned so far&nbsp;
+                            {isMobile && showLearnedMoves && (<span onClick={() => {handleDisplayInfoPanel('lsf')}}>↓</span>)}
+                        </p>
+                    }
                     {movesToDisplay.length > 0 ? (
                         movesToDisplay.map((move) => (
-                        <button onClick={()=> {navigate(`/lesson/${selectedMartialArt.id}/${move.id}`)}} className='hollow-container button background-color-1 learned-so-far-option flex-end clickable' key={move.id}>
-                            <p className='small-label clickable-text color-3'>{move.shortName ?? move.name}</p>
-                            <div className='small-button-within-button background-color-3'>
-                            <p className='small-label color-1'>✓</p>
+                        <button onClick={()=> {navigate(`/lesson/${selectedMartialArt.id}/${move.id}`)}} className='hollow-container button learned-so-far-option flex-end clickable border-color-8' key={move.id} style={{background: 'none'}}>
+                            <p className='small-label color-10'>{move.shortName ?? move.name}</p>
+                            <div className='small-button-within-button border-solid border-color-8'>
+                            <p className='small-label color-10'>✓</p>
                             </div>
                         </button>
                         ))
@@ -121,16 +131,16 @@ export default function LearnedSoFarPanel({selectedMartialArtLessons, selectedMa
 
                     
                     <div className='space-between-row-container'>
-                        <div className='hollow-container'>
-                            <p className='small-label'>{ selectedMartialArtLearnedMoves?.length < numberOfMovesToDisplayPerPage || remainder ? selectedMartialArtLearnedMoves?.length : currentSelectionStartingNumber + numberOfMovesToDisplayPerPage} / {selectedMartialArtLearnedMoves?.length ?? 0}</p>
+                        <div className='hollow-container color-8'>
+                            <p className='small-label color-10'>{ selectedMartialArtLearnedMoves?.length < numberOfMovesToDisplayPerPage || remainder ? selectedMartialArtLearnedMoves?.length : currentSelectionStartingNumber + numberOfMovesToDisplayPerPage} / {selectedMartialArtLearnedMoves?.length ?? 0}</p>
                         </div>
                         <div className='button-height'>
                             <div className='chevron-button-container button-height'>
-                                <button onClick={() => {handlePagination("left")}} className='remove-button-style left-only-radius chevron-selector-button-left hollow-container color-3'>
-                                    <p className='chevron color-3'>&lt;</p>
+                                <button onClick={() => {handlePagination("left")}} className='remove-button-style left-only-radius chevron-selector-button-left hollow-container color-8'>
+                                    <p className='chevron color-10'>&lt;</p>
                                 </button>
-                                <button onClick={() => {handlePagination("right")}} className='remove-button-style right-only-radius chevron-selector-button-right hollow-container color-3'>
-                                    <p className='chevron color-3'>&gt;</p>
+                                <button onClick={() => {handlePagination("right")}} className='remove-button-style right-only-radius chevron-selector-button-right hollow-container color-8'>
+                                    <p className='chevron color-10'>&gt;</p>
                                 </button>
                             </div>
                         </div>
@@ -143,8 +153,8 @@ export default function LearnedSoFarPanel({selectedMartialArtLessons, selectedMa
     function RenderFillerMoves(){
         function fillerMove(){
             return(
-                <div className='hollow-container button background-color-1 learned-so-far-option' style={{backgroundColor: 'grey'}}>
-                    <p className="text-align-center full-width filler-move tertiary-font" data-fulltext="Study more!">もっと勉強しなさい</p>
+                <div className='hollow-container button learned-so-far-option border-color-7'>
+                    <p className="color-10 text-align-center full-width small-label filler-move" data-fulltext="EMPTY SLOT">エンテイースロット</p>
                 </div>
             )
         }
@@ -195,17 +205,7 @@ export default function LearnedSoFarPanel({selectedMartialArtLessons, selectedMa
 
     return(
         <div className={`info-panel-container self-flex-end ${isMobile ? 'full-width flex full-height' : 'width-50'}`} style={{width: isMobile && '90%', alignItems: isMobile ? 'center' : ''}}>
-            {isMobile &&
-                <p className='only-margin-top text-align-center color-3 learned-so-far-font-size secondary-font'>Learned so far&nbsp;
-                    {isMobile && showLearnedMoves && (<span onClick={() => {handleDisplayInfoPanel('lsf')}}>↓</span>)}
-                </p>
-            }
-
-            {!isMobile &&
-                <p className='no-margin text-align-center color-3 learned-so-far-font-size secondary-font'>
-                    Learned so far
-                </p>
-            }
+            
             
             {!isMobile && 
                 <LearnedSoFarInfoPanel selectedMartialArt={selectedMartialArt} selectedMartialArtLessons={selectedMartialArtLessons}/>

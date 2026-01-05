@@ -15,7 +15,8 @@ export default function Dashboard(){
         reviews,
         loading,
         allSteps,
-        isMobile
+        isMobile,
+        isTempUser
     } = useAppContext();
 
     const navigate = useNavigate();
@@ -26,31 +27,42 @@ export default function Dashboard(){
     const [constructedReviews, setConstructedReviews] = useState();
     const [selectedMartialArtReviews, setSelectedMartialArtReviews] = useState();
     const [beginReviews, setBeginReviews] = useState(false);
-    const [nextReviewDateTime, setNextReviewDateTime] = useState()<Date>;
-
-    console.log('nextReviewDateTime', nextReviewDateTime)
+    const [nextReviewDateTime, setNextReviewDateTime] = useState<String | null>();
 
     useEffect(() => {
         handleSetSelectedMartialArtLessons();
     }, [])
 
-    console.log('user?.learnedMoves', user?.learnedMoves)
-
     useEffect(() => {
-        const learnedMoveDateTimes = user?.learnedMoves.map((lm) => {
-            return new Date(lm.nextReviewDate).getTime();
-        })
+        if (selectedMartialArtReviews || !selectedMartialArtLearnedMoves || selectedMartialArtLearnedMoves && selectedMartialArtLearnedMoves.length < 1){
+            setNextReviewDateTime(null);
+            return
+        }
 
-        if (reviews?.length == 0){
+        let learnedMoveDateTimes; 
+        
+        if (user && selectedMartialArt && selectedMartialArt.id){
+            learnedMoveDateTimes = user.learnedMoves.filter(lm => lm.martialArtId == selectedMartialArt.id).map((lm) => {
+                return new Date(lm.nextReviewDate).getTime();
+            })
+        }
+
+        if (!learnedMoveDateTimes){
+            console.log('learnedMoveDateTimes fail', learnedMoveDateTimes)
+            setNextReviewDateTime(null)
+            return
+        }
+
+        else if (selectedMartialArtLearnedMoves.length != 0){
             const learnedMovesOrderedByLowestDateTime = learnedMoveDateTimes.sort((a, b) => a < b);
             const nextReviewDateTime = new Date(learnedMovesOrderedByLowestDateTime[0]);
             const nextReviewDateTimeLocalString = nextReviewDateTime.toLocaleString('en-GB', {
                 dateStyle: 'medium',
                 timeStyle: 'short',
             });
-            setNextReviewDateTime(nextReviewDateTimeLocalString)
+            setNextReviewDateTime(nextReviewDateTimeLocalString);
         }
-    }, [user])
+    }, [selectedMartialArtLearnedMoves])
 
     useEffect(() => {
         handleSetSelectedMartialArtLessons();
@@ -134,35 +146,53 @@ export default function Dashboard(){
         movesThatHaveBeenLearned && setSelectedMartialArtLearnedMoves(movesThatHaveBeenLearned);
     }
 
+    const redirectToRegister = () => {
+        navigate('/register');
+    }
+
     return(
         loading ? (
             <>loading...</>
         ) : !loading && !beginReviews ? (
-            <div className={`dashboard-container ${isMobile ? 'mobile-dashboard-width mobile-dashboard-height' : 'dashboard-container-width'}`}>
-                <DashboardTopRow nextReviewDateTime={nextReviewDateTime} selectedMartialArtReviews={selectedMartialArtReviews} selectedMartialArtLessons={selectedMartialArtLessons} reviews={selectedMartialArtReviews} selectedMartialArt={selectedMartialArt} setSelectedMartialArt={setSelectedMartialArt} handleSetBeginReviews={handleSetBeginReviews} beginReviews={beginReviews}/>
+            <div className={`dashboard-container dashboard-container-width dashboard-container-height`}>
+                <DashboardTopRow nextReviewDateTime={nextReviewDateTime} selectedMartialArtReviews={selectedMartialArtReviews} selectedMartialArtLessons={selectedMartialArtLessons} reviews={selectedMartialArtReviews} selectedMartialArt={selectedMartialArt} setSelectedMartialArt={setSelectedMartialArt} handleSetBeginReviews={handleSetBeginReviews} beginReviews={beginReviews} redirectToRegister={redirectToRegister} />
                 <DashboardMainSection selectedMartialArtLessons={selectedMartialArtLessons} selectedMartialArtLearnedMoves={selectedMartialArtLearnedMoves} selectedMartialArt={selectedMartialArt} handleSetBeginReviews={handleSetBeginReviews} reviews={reviews}/>
                 { isMobile && 
                     <div className="space-between-row-container full-width button-height" style={{marginTop: '10px'}}>
-                        <div className={`${selectedMartialArtLessons?.length ? 'clickable' : ''} button background-color-1`} style={{width: '100%', marginRight: '5px'}} onClick={()=> {selectedMartialArtLessons[0] && navigate(`/lesson/${selectedMartialArt.id}/${selectedMartialArtLessons[0].id}`)}}>
-                            <p className={`${selectedMartialArtLessons?.length > 0 ? 'clickable-text' : ''} label color-2`}>
+                        <div className={`${selectedMartialArtLessons?.length ? 'clickable' : ''} button border-color-1 border-solid`} style={{width: '50%', marginRight: '5px'}} onClick={()=> {selectedMartialArtLessons[0] && navigate(`/lesson/${selectedMartialArt.id}/${selectedMartialArtLessons[0].id}`)}}>
+                            <p className={`label color-10`}>
                                 Lessons
                             </p>
                             <div className='button-within-button background-color-2'>
-                                <p className='small-label color-1'>
+                                <p className='small-label color-10'>
                                     {selectedMartialArtLessons?.length ?? 0}
                                 </p>
                             </div>
                         </div>
-                        <div className={`${selectedMartialArtReviews?.length ? 'clickable' : ''} hollow-container color-1`} style={{width: '100%', marginLeft: '5px'}}>
-                            <p className={`${selectedMartialArtReviews?.length > 0 ? 'clickable-text' : ''} label color-1 link`} onClick={handleSetBeginReviews}>
-                                Reviews
-                            </p>
-                            <div className='button-within-button background-color-1'>
-                                <p className='small-label color-2'>
-                                    {selectedMartialArtReviews?.length ?? 0}
+                        {nextReviewDateTime ? (
+                            <div className={`${selectedMartialArtReviews?.length ? 'clickable' : ''} hollow-container color-6 top-row-max-height`} style={{display: 'inline-block', padding: '2px', width: '50%', marginLeft: '5px'}}>
+                                <p className={'next-review-label-component label color-10'}>
+                                    Next Review Date
+                                </p>
+                                <p className={'next-review-date-component label color-10'}>
+                                    {nextReviewDateTime}
                                 </p>
                             </div>
-                        </div>
+                            
+                        ) : (
+                                <div className={`${selectedMartialArtReviews?.length ? 'clickable' : ''} hollow-container color-1 top-row-max-height`} style={{width: '50%', marginLeft: '5px'}}>
+                                    <p className={`label color-10`} onClick={isTempUser ? redirectToRegister : handleSetBeginReviews}>
+                                        Reviews
+                                    </p>
+                                    <div className='button-within-button border-color-1'>
+                                        <p className='small-label color-10'>
+                                            {reviews?.length ?? 0}
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                            )
+                        }
                     </div>
                 }
             </div>

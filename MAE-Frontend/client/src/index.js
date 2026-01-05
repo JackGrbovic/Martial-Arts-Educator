@@ -17,6 +17,7 @@ import CookieTest from './Auth/pages/CookieTest.tsx';
 import ProtectedRoute from './ProtectedRoute.tsx';
 import LoginWithLink from './Auth/pages/LoginWithLink.tsx';
 import CompleteRegistration from './Auth/pages/CompleteRegistration.tsx';
+import { ErrorBoundary } from './components/general/ErrorBoundary.tsx';
 
 
 //need to figure out route params for test (if it's a lesson/reviews, just one martial art or more)
@@ -49,7 +50,9 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <ErrorBoundary>
+      <RouterProvider router={router} />
+    </ErrorBoundary>
   </React.StrictMode>
 );
 

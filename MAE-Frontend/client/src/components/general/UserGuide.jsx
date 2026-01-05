@@ -6,7 +6,7 @@ export default function UserGuide({showUserGuide, showLearnedMoves, handleDispla
 
     const userGuideText = () => {
         return(
-            <p className="color-7 secondary-font user-guide-font-size no-margin">
+            <p className="color-10 primary-font user-guide-font-size no-margin">
                 This is the Martial Arts Educator. Its primary goal is to break down often complex grappling techniques into several steps
                 which the user can learn individually, and then be tested on to solidify their knowledge. 
                 <br />
@@ -32,15 +32,15 @@ export default function UserGuide({showUserGuide, showLearnedMoves, handleDispla
     }
 
     return(
-        <div className={`info-panel-container full-width`} style={{height: isMobile && '100%', alignItems: isMobile ? 'center' : '', width: isMobile ? '80%' : '400px'}}>
+        <div className={`info-panel-container full-width`} style={{height: isMobile && '100%', alignItems: isMobile ? 'center' : '', width: isMobile ? '80%' : '100%'}}>
             {isMobile && showUserGuide && !showLearnedMoves &&
                 <div style={{width: '100%', height: '100%', alignContent: 'center'}}>
                     <div style={{width: '100%', display: 'flex', justifyContent: 'space-between'}}>
-                        <p className='secondary-font color-6 info-label-font-size' style={{margin: '0px', textAlign: 'left', fontWeight: 'bold'}}>User Guide</p>
-                        {isMobile && showUserGuide && (<span className="secondary-font color-6 info-label-font-size clickable"  onClick={() => {handleDisplayInfoPanel('ug')}}>↓</span>)}
+                        <p className='primary-font color-6 info-label-font-size' style={{margin: '0px', textAlign: 'left', fontWeight: 'bold'}}>User Guide</p>
+                        {isMobile && showUserGuide && (<span className="primary-font color-6 info-label-font-size clickable"  onClick={() => {handleDisplayInfoPanel('ug')}}>↓</span>)}
                     </div>
                     
-                    <div className="faded-background border-radius border-color-1" style={{height: '230px', padding: '10px', border: '1px solid'}}>
+                    <div className="border-radius border-color-1" style={{height: '230px', padding: '10px', border: '1px solid'}}>
                             <div className="scroll" style={{height: '230px'}}>
                                 {userGuideText()}
                             </div>
@@ -50,8 +50,8 @@ export default function UserGuide({showUserGuide, showLearnedMoves, handleDispla
 
             {!isMobile &&
                 <>
-                    <p className='secondary-font color-6 info-label-font-size' style={{margin: '0px', textAlign: 'left', fontWeight: 'bold'}}>User Guide</p>
-                    <div className="faded-background border-radius border-color-1" style={{height: '110px', padding: '10px', border: '1px solid'}}>
+                    <p className='primary-font color-10 info-label-font-size' style={{margin: '0px', textAlign: 'left'}}>User Guide</p>
+                    <div className="border-radius border-color-1 border-solid faded-background" style={{height: '120px', padding: '10px'}}>
                         <div className="scroll" style={{maxHeight: '110px'}}>
                             {userGuideText()}
                         </div>

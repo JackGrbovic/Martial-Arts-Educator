@@ -32,24 +32,18 @@ export const authApi = {
 
     async refresh(){
         isRefreshing = true;
-        console.log("isrefreshing")
 
         try {
-            console.log("refresh try")
             const refreshResponse = await api.post("/refresh", { withCredentials : true });
-
-            console.log("refreshResponse", refreshResponse)
 
             const user = refreshResponse.data.user;
 
             processQueue(null, user);
             return api(originalRequest)
         } catch (refreshError) {
-            console.log("refresh catch")
             processQueue(refreshError, null);
             return Promise.reject(refreshError);
         } finally {
-            console.log("refresh finally")
             isRefreshing = false
         }
     }
@@ -74,7 +68,6 @@ const checkIfUrlShouldNotBeRefreshed = (url) => {
 }
 
 export const refreshResponse = api.interceptors.response.use((response) => {
-    console.log(response); 
     if (response.status === 200){ 
         return response;
     }
@@ -88,7 +81,6 @@ export const refreshResponse = api.interceptors.response.use((response) => {
 
         if (error.status !== 200){
             try{
-                console.log("trying refresh after endpoint auth failure")
                 await authApi.refresh();
                 return api(originalRequest);
             }
@@ -136,9 +128,7 @@ export const refreshResponse = api.interceptors.response.use((response) => {
 
 
 export const updateUserLearnedMoves = async (learnedMovesDto) => {
-    console.log("learnedMovesDto in update endpoint", learnedMovesDto)
     const response = await api.post('/update-learned-moves', learnedMovesDto, { withCredentials : true });
-    console.log("responseIn updateUserLearnedMoves", response)
     return response.data;
 }
 

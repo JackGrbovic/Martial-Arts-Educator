@@ -146,25 +146,30 @@ export default function Test({isReviewsArg, testData, navigationTarget}){
     };
 
     return(
-        <div className='test-container' style={{marginTop: '20px', width: isMobile && '90vw', height: isMobile && 'auto'}}>
-            <div style={{width: '100%', display: 'flex'}}>
-                <div onClick={(e)=> {
-                    navigate(navigationTarget);
-                }} className="color-1 secondary-font" style={{fontSize: '20px', margin: '0px', justifySelf:'flex-start'}}>
-                    ← Dashboard 
+        <div className='test-container dashboard-container-width dashboard-container-height' style={{marginTop: '20px'}}>
+            <div className='full-width flex flex-wrap'>
+                <div className='hollow-container border-color-1 clickable' style={{height: '30px', marginRight: '10px'}}>
+                    <p onClick={(e)=> {
+                        navigate(navigationTarget);
+                    }} className="color-10 primary-font back-to-dashboard-text">
+                        ← Dashboard 
+                    </p>
                 </div>
+                {
+                    
+                    currentMove && currentMove.martialArtName && currentMove.name && (
+                        <div className='hollow-container border-color-1' style={{height: '30px'}}>
+                            <p className='color-10 primary-font back-to-dashboard-text'>{currentMove.martialArtName}: {currentMove.name}: {currentStep.stepNumber}</p>
+                        </div>
+                    ) 
+                }
             </div>
             
-            {
-                currentMove && currentMove.martialArtName && currentMove.name && (
-                    <p className='medium-title color-1'>{currentMove.martialArtName}: {currentMove.name}</p>
-                ) 
-            }
                 
             {
                 !endTest ? (
                     <div className='full-width-and-height'>
-                        <TestTopRow move={currentMove} currentStep={currentStep} />
+                        {/* <TestTopRow move={currentMove} currentStep={currentStep} /> */}
                         <TestQuestions currentStep={currentStep} 
                             HandleAnswerQuestion={HandleAnswerQuestion} 
                             HandleNextQuestion={HandleNextQuestion} 

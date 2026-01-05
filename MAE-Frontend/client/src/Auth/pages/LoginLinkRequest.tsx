@@ -41,7 +41,14 @@ export default function LoginLinkRequest(){
     }
 
     return(
-        <>
+        <div className="background-color-2 hollow-container" style={{flexWrap: 'wrap', width: '290px'}}>
+            <div className='hollow-container border-color-1 clickable' style={{height: '20px', marginBottom: '10px'}}>
+                <p onClick={(e)=> {
+                    navigate('/');
+                }} className="color-10 primary-font back-to-dashboard-text" style={{fontSize: '12px'}}>
+                    ← Dashboard 
+                </p>
+            </div>
             {!errorMessage && !successText &&
                 <form onSubmit={handleSubmit(onSubmit)} style={{display: 'flex', flexDirection: 'column'}}>
                     {errorMessage && <p className="error-message">{errorMessage}</p>}
@@ -66,7 +73,7 @@ export default function LoginLinkRequest(){
             }
             {errorMessage && <p className={'primary-font'}>{errorMessage}</p>}
             {successText && <p className={'primary-font'}>{successText}</p>}
-        </>
+        </div>
         
     )
 }

@@ -40,6 +40,8 @@ export default function LoginWithLink(){
     }, [tokenHash])
 
     return(
-        <p>{errorMessage ? errorMessage : 'Processing...'}</p>
+        <div className="background-color-2 hollow-container">
+            <p>{errorMessage ? errorMessage : 'Processing...'}</p>
+        </div>
     )
 }

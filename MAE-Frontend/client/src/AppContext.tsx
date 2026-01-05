@@ -41,14 +41,10 @@ import { useLocation } from "react-router-dom";
     const [userLoading, setUserLoading] = useState<boolean>(true);
     const [isTempUser, setIsTempUser] = useState<boolean>(null)
 
-    console.log('user', user)
-
 
     const fetchUserOnRefresh = async () => {
       try{
         const response = await api.post("/refresh", { withCredentials : true });
-        
-        console.log('fetchUserOnRefresh response', response)
         
         if (response.status == 200){
           const responseUser = response.data.user;
@@ -58,7 +54,7 @@ import { useLocation } from "react-router-dom";
           return;
         }        
       } catch {
-        const tempUserFromStorage = JSON.parse(localStorage.getItem('user'));
+        const tempUserFromStorage = JSON.parse(localStorage.getItem('tempUser'));
         if (tempUserFromStorage){
           setUser(tempUserFromStorage);
         }
@@ -66,7 +62,7 @@ import { useLocation } from "react-router-dom";
         else{
             setUser({
             id: 'tempUser',
-            name: '',
+            userName: 'TempUser',
             learnedMoves: [],
             reviews: []
           });
@@ -77,7 +73,7 @@ import { useLocation } from "react-router-dom";
     };
 
     const updateTempUser = () => {
-      localStorage.setItem('user', JSON.stringify(user));
+      if (user?.id === 'tempuser') localStorage.setItem('tempUser', JSON.stringify(user));
     }
 
     const handleSetLessons = (user, martialArts) => {
@@ -159,8 +155,7 @@ import { useLocation } from "react-router-dom";
         localStorage.setItem('allSteps', JSON.stringify(response.data.steps))
         handleSetAppData(response.data.martialArts, response.data.steps)
 
-      } catch (err) {
-        console.error("Failed to set MartialArts", err.message);
+      } catch {
         setMartialArts(null);
       } finally{
         setLoading(false);
