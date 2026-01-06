@@ -165,8 +165,8 @@ namespace MAE_WebAPI.Controllers{
             {
                 HttpOnly = true,
                 Secure = true,
-                // SameSite = SameSiteMode.None,
-                SameSite = SameSiteMode.Strict,
+                SameSite = SameSiteMode.None,
+                //SameSite = SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddMinutes(5)
             });
 
@@ -174,8 +174,8 @@ namespace MAE_WebAPI.Controllers{
             {
                 HttpOnly = true,
                 Secure = true,
-                // SameSite = SameSiteMode.None,
-                SameSite = SameSiteMode.Strict,
+                SameSite = SameSiteMode.None,
+                //SameSite = SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddDays(20)
             });
 
@@ -232,8 +232,8 @@ namespace MAE_WebAPI.Controllers{
             {
                 HttpOnly = true,
                 Secure = true,
-                // SameSite = SameSiteMode.None,
-                SameSite = SameSiteMode.Strict,
+                SameSite = SameSiteMode.None,
+                //SameSite = SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddMinutes(5)
             });
 
@@ -241,8 +241,8 @@ namespace MAE_WebAPI.Controllers{
             {
                 HttpOnly = true,
                 Secure = true,
-                // SameSite = SameSiteMode.None,
-                SameSite = SameSiteMode.Strict,
+                SameSite = SameSiteMode.None,
+                //SameSite = SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddDays(20)
             });
 
@@ -256,16 +256,16 @@ namespace MAE_WebAPI.Controllers{
             {
                 HttpOnly = true,
                 Secure = true,
-                // SameSite = SameSiteMode.None,
-                SameSite = SameSiteMode.Strict,
+                SameSite = SameSiteMode.None,
+                //SameSite = SameSiteMode.Strict,
             });
 
             Response.Cookies.Delete("refresh_token", new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
-                // SameSite = SameSiteMode.None,
-                SameSite = SameSiteMode.Strict,
+                SameSite = SameSiteMode.None,
+                //SameSite = SameSiteMode.Strict,
             });
 
             return Ok();
@@ -358,8 +358,8 @@ namespace MAE_WebAPI.Controllers{
             {
                 HttpOnly = true,
                 Secure = true,
-                // SameSite = SameSiteMode.None,
-                SameSite = SameSiteMode.Strict,
+                SameSite = SameSiteMode.None,
+                //SameSite = SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddMinutes(5)
             });
 
@@ -367,8 +367,8 @@ namespace MAE_WebAPI.Controllers{
             {
                 HttpOnly = true,
                 Secure = true,
-                // SameSite = SameSiteMode.None,
-                SameSite = SameSiteMode.Strict,
+                SameSite = SameSiteMode.None,
+                //SameSite = SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddDays(20)
             });
 
