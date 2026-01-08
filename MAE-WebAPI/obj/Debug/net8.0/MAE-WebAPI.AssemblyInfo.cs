@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MAE-WebAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f3a91cb45d0812fb2358b5f2867f65ba75ecd25e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6d290579c8cfd0aa7d9e3d545ad8c235aa93bd61")]
 [assembly: System.Reflection.AssemblyProductAttribute("MAE-WebAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MAE-WebAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

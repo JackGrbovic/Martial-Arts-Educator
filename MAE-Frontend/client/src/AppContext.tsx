@@ -14,8 +14,8 @@ import { useLocation } from "react-router-dom";
     setUnlearnedMoves: Function;
     reviews: Move[];
     loading: boolean;
-    logout: () => void;
     setUser: SetStateAction<User | null>,
+    handleSetTriggerFetchUser: () => void,
     isTempUser : boolean,
     isMobile: boolean
   };
@@ -39,8 +39,8 @@ import { useLocation } from "react-router-dom";
     const [reviews, setReviews] = useState();
     const [loading, setLoading] = useState(true);
     const [userLoading, setUserLoading] = useState<boolean>(true);
-    const [isTempUser, setIsTempUser] = useState<boolean>(null)
-
+    const [isTempUser, setIsTempUser] = useState<boolean>(null);
+    const [triggerFetchUser, setTriggerFetchUser] = useState<boolean>(false);
 
     const fetchUserOnRefresh = async () => {
       try{
@@ -48,9 +48,7 @@ import { useLocation } from "react-router-dom";
         
         if (response.status == 200){
           const responseUser = response.data.user;
-          setReviews(responseUser.reviews);
-          setUser(responseUser);
-          setUserLoading(false);
+          handleSetUserFromDb(responseUser)
           return;
         }        
       } catch {
@@ -71,6 +69,13 @@ import { useLocation } from "react-router-dom";
         setUserLoading(false);
       }
     };
+
+
+    function handleSetUserFromDb(user){
+      setReviews(user.reviews);
+      setUser(user);
+      setUserLoading(false);
+    }
 
     const updateTempUser = () => {
       if (user?.id === 'tempuser') localStorage.setItem('tempUser', JSON.stringify(user));
@@ -177,13 +182,14 @@ import { useLocation } from "react-router-dom";
       };
 
       fetchUserOnRefreshWrapper();
-    }, []);
+
+      if(triggerFetchUser) setTriggerFetchUser(false);
+    }, [triggerFetchUser]);
 
     useEffect(() => {
-      isTempUser != true && setIsTempUser(user?.id === "tempUser" ? true : false)
+      setIsTempUser(user?.id === "tempUser" ? true : false)
       isTempUser && updateTempUser();
     }, [user])
-
 
     useEffect(() => {
       if (isTempUser) return;
@@ -201,21 +207,19 @@ import { useLocation } from "react-router-dom";
       user && setAllData();
       
     }, [user]);
-
-    const location = useLocation();
-
-    useEffect(() => {
-        
-    }, []);
-
-    const logout = () => {
-      setUser(null);
-      navigate('/');
-      window.location.reload();
-    };
+    
+    function handleLogoutInContext(){
+      setUser({
+            id: 'tempUser',
+            userName: 'TempUser',
+            learnedMoves: [],
+            reviews: []
+      })
+      setReviews([]);
+    }
 
     return (
-      <AppContext.Provider value={{ user, martialArts, allSteps, unlearnedMoves, reviews, loading, logout, setUser, isMobile, iframeParentSize, windowSize, setIframeLoaded, isTempUser}}>
+      <AppContext.Provider value={{ user, martialArts, allSteps, handleSetUserFromDb, handleLogoutInContext, unlearnedMoves, reviews, loading, setUser, isMobile, iframeParentSize, windowSize, setIframeLoaded, isTempUser}}>
         <div style={{position: 'relative', bottom: '30px'}}>
           {children}
         </div>

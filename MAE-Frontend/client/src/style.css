@@ -264,6 +264,16 @@
 
 }
 
+.move-title-scroll{
+    overflow-x: scroll;
+    max-width: 100%;            
+    overflow-x: auto;           
+    overflow-y: hidden;         
+    white-space: nowrap;        
+    padding: 0.5rem;
+    box-sizing: border-box;
+}
+
 .full-height{
     height: 100%;
 }
@@ -856,6 +866,10 @@
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     border-top: none;
+}
+
+.white-space-nowrap{
+    white-space: nowrap;
 }
 
 .username-label{

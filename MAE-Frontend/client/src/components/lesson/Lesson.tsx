@@ -107,8 +107,8 @@ export default function Lesson(){
         <div className='full-width-and-height'>
             {!testData ? (
                 <div className='lesson-container dashboard-container-width dashboard-container-height' id="iframeParent">
-                    <div className='full-width flex' style={{flexWrap: 'wrap'}}>
-                        <div className='hollow-container border-color-1 clickable' style={{height: '30px', marginRight: '10px', marginBottom: '5px'}}>
+                    <div className='full-width flex'>
+                        <div className='hollow-container border-color-1 clickable' style={{height: '30px', marginRight: '10px', marginBottom: '5px', minWidth: '130px'}}>
                             <p onClick={(e)=> {
                                 navigate('/');
                                 window.location.reload();
@@ -116,7 +116,7 @@ export default function Lesson(){
                                 ← Dashboard 
                             </p>
                         </div>
-                        <div className='hollow-container border-color-1 clickable' style={{height: '30px'}}>
+                        <div className='hollow-container border-color-1 clickable move-title-scroll' style={{height: '30px', maxWidth: '580px'}}>
                             <p className='medium-title color-10 lesson-move-name'>{currentMove && currentMove.name}: {currentStep?.name }</p>
                         </div>
                     </div>

@@ -13,7 +13,7 @@ const ProtectedRoute = ({ children }) => {
 
     //find out why this no work
   
-     return !loading && user ? children : <Navigate to="/login" replace />;
+     return !loading && user ? children : <Navigate to="/" replace />;
 };
 
   export default ProtectedRoute;

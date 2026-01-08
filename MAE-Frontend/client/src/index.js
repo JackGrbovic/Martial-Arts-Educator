@@ -29,15 +29,11 @@ const router = createBrowserRouter([
       {
         index: true,
         element: (
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
+          <Dashboard />
         )
       },
       { path: "/lesson/:martialArtId/:moveId", element: 
-        <ProtectedRoute>
-          <Lesson />
-        </ProtectedRoute> 
+        <Lesson />
       }, 
       { path: "register", element: <Register /> },
       { path: "login-link-request", element: <LoginLinkRequest /> },

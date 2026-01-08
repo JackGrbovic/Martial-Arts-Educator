@@ -53,7 +53,7 @@ const checkIfUrlShouldNotBeRefreshed = (url) => {
     if (url.includes('/refresh')) {
         return false;
     }
-    if (url.includes('/login')) {
+    if (url.includes('/login-with-link')) {
         return false;
     }
     if (url.includes('/login-link-request')) {

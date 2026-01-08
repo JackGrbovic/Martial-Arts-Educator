@@ -237,6 +237,16 @@ namespace MAE_WebAPI.Controllers{
                 Expires = DateTime.UtcNow.AddMinutes(5)
             });
 
+            var learnedMoveDtos = await _context.LearnedMoves.Where(lm => lm.UserId == user.Id).Select(lm => new LearnedMoveDto
+                {
+                    Id = lm.Id,
+                    MoveId = lm.MoveId,
+                    UserId = lm.UserId,
+                    MartialArtId = lm.MartialArtId,
+                    EaseFactor = lm.EaseFactor,
+                    NextReviewDate = lm.NextReviewDate
+                }).ToListAsync();
+
             Response.Cookies.Append("refresh_token", signInResult.RefreshTokenHash, new CookieOptions
             {
                 HttpOnly = true,
@@ -246,7 +256,19 @@ namespace MAE_WebAPI.Controllers{
                 Expires = DateTime.UtcNow.AddDays(20)
             });
 
-            return Ok(signInResult.User);
+            
+
+            return Ok(new
+            {
+                user = new
+                {
+                    user.Id,
+                    user.Email,
+                    user.UserName,
+                    LearnedMoves = learnedMoveDtos,
+                    Reviews = _mAEControllerFunctionProvider.ShuffleReviews(learnedMoveDtos.Where(lm => lm.NextReviewDate < DateTime.Now).ToList())
+                }
+            });
         }
 
         [HttpPost("logout")]

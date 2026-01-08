@@ -154,7 +154,7 @@ export default function LearnedSoFarPanel({selectedMartialArtLessons, selectedMa
         function fillerMove(){
             return(
                 <div className='hollow-container button learned-so-far-option border-color-7'>
-                    <p className="color-10 text-align-center full-width small-label filler-move" data-fulltext="EMPTY SLOT">エンテイースロット</p>
+                    <p className="color-10 text-align-center full-width small-label filler-move white-space-nowrap" style={{fontSize: '13px'}} data-fulltext="EMPTY SLOT">エンテイースロット</p>
                 </div>
             )
         }

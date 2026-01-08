@@ -31,7 +31,7 @@ export default function Dashboard(){
 
     useEffect(() => {
         handleSetSelectedMartialArtLessons();
-    }, [])
+    }, [user])
 
     useEffect(() => {
         if (selectedMartialArtReviews || !selectedMartialArtLearnedMoves || selectedMartialArtLearnedMoves && selectedMartialArtLearnedMoves.length < 1){
@@ -48,7 +48,6 @@ export default function Dashboard(){
         }
 
         if (!learnedMoveDateTimes){
-            console.log('learnedMoveDateTimes fail', learnedMoveDateTimes)
             setNextReviewDateTime(null)
             return
         }
@@ -186,7 +185,7 @@ export default function Dashboard(){
                                     </p>
                                     <div className='button-within-button border-color-1'>
                                         <p className='small-label color-10'>
-                                            {reviews?.length ?? 0}
+                                            {selectedMartialArtReviews?.length ?? 0}
                                         </p>
                                     </div>
                                 </div>

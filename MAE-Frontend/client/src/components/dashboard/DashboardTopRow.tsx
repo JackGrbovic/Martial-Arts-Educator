@@ -5,9 +5,11 @@ import { api } from "../../apiClient.ts";
 import LoginWithLink from "../../Auth/pages/LoginWithLink.tsx";
 
 export default function DashboardTopRow({nextReviewDateTime, selectedMartialArtLessons, reviews, selectedMartialArt, setSelectedMartialArt, beginReviews, handleSetBeginReviews, selectedMartialArtReviews, redirectToRegister}){
-    const { martialArts, isMobile, isTempUser, user } = useAppContext();
+    const { martialArts, isMobile, isTempUser, user, handleLogoutInContext } = useAppContext();
     const [logout, setLogout] = useState(false);
     const navigate = useNavigate();
+
+  
 
     useEffect(() => {
         martialArts && setSelectedMartialArt(martialArts[0])
@@ -22,15 +24,15 @@ export default function DashboardTopRow({nextReviewDateTime, selectedMartialArtL
 
 
     useEffect(() => {
+        if(!logout) return;
+
         const handleLogout = async ()=> {
             await api.post('/logout')
+            handleLogoutInContext();
+            navigate('/');
         }
 
-        if(logout){
-            handleLogout();
-            navigate('/')
-            window.location.reload();
-        }
+        handleLogout();
     }, [logout])
 
     // const handleSetMartialArtsArrayForDropdown = () => {

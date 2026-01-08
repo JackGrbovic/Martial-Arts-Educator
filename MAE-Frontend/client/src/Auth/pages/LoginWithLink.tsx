@@ -6,8 +6,10 @@ import { resolve } from "path";
 import api from "../../apiClient.ts";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from 'react';
+import { useAppContext } from "../../AppContext.tsx";
 
 export default function LoginWithLink(){
+    const { handleSetUserFromDb } = useAppContext();
     const navigate = useNavigate();
 
     const [isLoading, setIsLoading] = useState(true);
@@ -27,8 +29,8 @@ export default function LoginWithLink(){
             try {
                 const response = await api.post('/login', {tokenHash: tokenHash});
                 if(response.status === 200) {
+                    handleSetUserFromDb(response.data);
                     navigate('/');
-                    window.location.reload();
                 }
             } catch (error) {
                 setErrorMessage("Unable to log in. Please try again or contact the system administrator.");
